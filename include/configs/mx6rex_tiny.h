@@ -197,13 +197,13 @@
 
 /* Env settings */
 #define CONFIG_ENV_CONSOLE_DEV		"ttymxc0"
-#define CONFIG_ENV_MMCROOT		"/dev/mmcblk0p2"
+#define CONFIG_ENV_MMCROOT		"/dev/mmcblk2p2"
 #if defined(CONFIG_MX6Q)
-#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6q-rexlite.dtb"
+#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6q-rextiny.dtb"
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6dl-rexlite.dtb"
+#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6dl-rextiny.dtb"
 #elif defined(CONFIG_MX6S)
-#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6dl-rexlite.dtb"
+#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6dl-rextiny.dtb"
 #endif
 #define CONFIG_ENV_DEFAULT_ETH_ADDR     "00:0D:15:00:D1:75"
 #define CONFIG_ENV_DEFAULT_CLIENT_IP    "192.168.0.150"
