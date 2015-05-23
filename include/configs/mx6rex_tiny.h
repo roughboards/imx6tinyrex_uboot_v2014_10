@@ -56,6 +56,7 @@
 #define CONFIG_GENERIC_MMC
 #define CONFIG_BOUNCE_BUFFER
 #define CONFIG_CMD_FAT
+#define CONFIG_FAT_WRITE
 #define CONFIG_CMD_EXT2
 #define CONFIG_CMD_EXT4
 #define CONFIG_CMD_EXT4_WRITE
@@ -205,11 +206,13 @@
 #elif defined(CONFIG_MX6S)
 #define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6dl-rextiny.dtb"
 #endif
-#define CONFIG_ENV_DEFAULT_ETH_ADDR     "00:0D:15:00:D1:75"
-#define CONFIG_ENV_DEFAULT_CLIENT_IP    "192.168.0.150"
-#define CONFIG_ENV_DEFAULT_SERVER_IP    "192.168.0.1"
-#define CONFIG_ENV_DEFAULT_NETMASK      "255.255.255.0"
-#define CONFIG_ENV_DEFAULT_UPD_FILE     "imx6/u-boot-rex-tiny.imx"
+#define CONFIG_ENV_DEFAULT_ETH_ADDR	"00:0D:15:00:D1:75"
+#define CONFIG_ENV_DEFAULT_CLIENT_IP	"192.168.0.150"
+#define CONFIG_ENV_DEFAULT_SERVER_IP	"192.168.0.1"
+#define CONFIG_ENV_DEFAULT_NETMASK	"255.255.255.0"
+#define CONFIG_ENV_DEFAULT_UPD_UBOOT	"imx6/u-boot-rextiny.imx"
+#define CONFIG_ENV_DEFAULT_UPD_KERNEL	"imx6/zImage-rextiny"
+#define CONFIG_ENV_DEFAULT_UPD_DT	"imx6/" CONFIG_ENV_DEFAULT_FDT_FILE
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"script=boot.scr\0" \
@@ -224,16 +227,42 @@
 	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV) "\0" \
 	"mmcpart=1\0" \
 	"mmcroot=" CONFIG_ENV_MMCROOT " rootwait rw\0" \
-	"update_bootloader=" \
-		"if test ${ethaddr};  then; else setenv ethaddr  " CONFIG_ENV_DEFAULT_ETH_ADDR  "; fi; " \
-		"if test ${ipaddr};   then; else setenv ipaddr   " CONFIG_ENV_DEFAULT_CLIENT_IP "; fi; " \
-		"if test ${serverip}; then; else setenv serverip " CONFIG_ENV_DEFAULT_SERVER_IP "; fi; " \
-		"if test ${netmask};  then; else setenv netmask  " CONFIG_ENV_DEFAULT_NETMASK   "; fi; " \
+	"update_set_ethernet=" \
+		"if test ${ethaddr}; then; else " \
+			"setenv ethaddr  " CONFIG_ENV_DEFAULT_ETH_ADDR  "; " \
+		"fi; " \
+		"if test ${ipaddr}; then; else " \
+			"setenv ipaddr   " CONFIG_ENV_DEFAULT_CLIENT_IP "; " \
+		"fi; " \
+		"if test ${serverip}; then; else " \
+			"setenv serverip " CONFIG_ENV_DEFAULT_SERVER_IP "; " \
+		"fi; " \
+		"if test ${netmask}; then; else " \
+			"setenv netmask  " CONFIG_ENV_DEFAULT_NETMASK   "; " \
+		"fi\0" \
+	"update_uboot=" \
+		"run update_set_ethernet; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp " CONFIG_ENV_DEFAULT_UPD_FILE "; then " \
+			"if tftp " CONFIG_ENV_DEFAULT_UPD_UBOOT "; then " \
 				"setexpr fw_sz ${filesize} / 0x200; " \
 				"setexpr fw_sz ${fw_sz} + 1; "	\
 				"mmc write ${loadaddr} 0x2 ${fw_sz}; " \
+			"fi; "	\
+		"fi\0" \
+	"update_kernel=" \
+		"run update_set_ethernet; " \
+		"if mmc dev ${mmcdev}; then "	\
+			"if tftp " CONFIG_ENV_DEFAULT_UPD_KERNEL "; then " \
+				"fatwrite mmc ${mmcdev}:${mmcpart} " \
+				"${loadaddr} ${image} ${filesize}; " \
+			"fi; "	\
+		"fi\0" \
+	"update_dt=" \
+		"run update_set_ethernet; " \
+		"if mmc dev ${mmcdev}; then "	\
+			"if tftp " CONFIG_ENV_DEFAULT_UPD_DT "; then " \
+				"fatwrite mmc ${mmcdev}:${mmcpart} " \
+				"${loadaddr} ${fdt_file} ${filesize}; " \
 			"fi; "	\
 		"fi\0" \
 	"mmcargs=setenv bootargs console=${console},${baudrate} " \
