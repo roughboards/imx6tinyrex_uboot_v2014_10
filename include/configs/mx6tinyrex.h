@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2012 Freescale Semiconductor, Inc.
+ * Copyright (C) 2015 Voipac.
  *
- * Configuration settings for the Fedevel i.MX6 REX TINY board.
+ * Configuration settings for the Fedevel i.MX6 TINYREX board.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
@@ -18,8 +18,8 @@
 #define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_DISPLAY_BOARDINFO
 
-#define MACH_TYPE_MX6REXTINY		5025
-#define CONFIG_MACH_TYPE		MACH_TYPE_MX6REXTINY
+#define MACH_TYPE_MX6TINYREX		5025
+#define CONFIG_MACH_TYPE		MACH_TYPE_MX6TINYREX
 #define CONFIG_BOOTDELAY		3
 
 #define CONFIG_LOADADDR			0x10800000
@@ -200,19 +200,21 @@
 #define CONFIG_ENV_CONSOLE_DEV		"ttymxc0"
 #define CONFIG_ENV_MMCROOT		"/dev/mmcblk2p2"
 #if defined(CONFIG_MX6Q)
-#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6q-rextiny.dtb"
+#define CONFIG_ENV_DEFAULT_ARCH_PREFIX	"imx6q"
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6dl-rextiny.dtb"
+#define CONFIG_ENV_DEFAULT_ARCH_PREFIX	"imx6dl"
 #elif defined(CONFIG_MX6S)
-#define CONFIG_ENV_DEFAULT_FDT_FILE	"imx6dl-rextiny.dtb"
+#define CONFIG_ENV_DEFAULT_ARCH_PREFIX	"imx6dl"
 #endif
+#define CONFIG_ENV_DEFAULT_FDT_FILE	CONFIG_ENV_DEFAULT_ARCH_PREFIX "-tinyrex.dtb"
 #define CONFIG_ENV_DEFAULT_ETH_ADDR	"00:0D:15:00:D1:75"
 #define CONFIG_ENV_DEFAULT_CLIENT_IP	"192.168.0.150"
 #define CONFIG_ENV_DEFAULT_SERVER_IP	"192.168.0.1"
 #define CONFIG_ENV_DEFAULT_NETMASK	"255.255.255.0"
-#define CONFIG_ENV_DEFAULT_UPD_UBOOT	"imx6/u-boot-rextiny.imx"
-#define CONFIG_ENV_DEFAULT_UPD_KERNEL	"imx6/zImage-rextiny"
-#define CONFIG_ENV_DEFAULT_UPD_DT	"imx6/" CONFIG_ENV_DEFAULT_FDT_FILE
+#define CONFIG_ENV_DEFAULT_UPD_UBOOT	"imx6/u-boot-" CONFIG_ENV_DEFAULT_ARCH_PREFIX "-tinyrex.imx"
+#define CONFIG_ENV_DEFAULT_UPD_KERNEL	"imx6/zImage-" CONFIG_ENV_DEFAULT_ARCH_PREFIX "-tinyrex"
+#define CONFIG_ENV_DEFAULT_UPD_DT	"imx6/"        CONFIG_ENV_DEFAULT_FDT_FILE
+#define CONFIG_ENV_DEFAULT_UPD_SCRIPT	"imx6/boot-"   CONFIG_ENV_DEFAULT_ARCH_PREFIX "-tinyrex.scr"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"script=boot.scr\0" \
@@ -240,10 +242,24 @@
 		"if test ${netmask}; then; else " \
 			"setenv netmask  " CONFIG_ENV_DEFAULT_NETMASK   "; " \
 		"fi\0" \
+	"update_set_filename=" \
+		"if test ${upd_uboot}; then; else " \
+			"setenv upd_uboot " CONFIG_ENV_DEFAULT_UPD_UBOOT   "; " \
+		"fi; " \
+		"if test ${upd_kernel}; then; else " \
+			"setenv upd_kernel " CONFIG_ENV_DEFAULT_UPD_KERNEL "; " \
+		"fi; " \
+		"if test ${upd_dt}; then; else " \
+			"setenv upd_dt " CONFIG_ENV_DEFAULT_UPD_DT         "; " \
+		"fi; " \
+		"if test ${upd_script}; then; else " \
+			"setenv upd_script " CONFIG_ENV_DEFAULT_UPD_SCRIPT "; " \
+		"fi\0" \
 	"update_uboot=" \
 		"run update_set_ethernet; " \
+		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp " CONFIG_ENV_DEFAULT_UPD_UBOOT "; then " \
+			"if tftp ${upd_uboot}; then " \
 				"setexpr fw_sz ${filesize} / 0x200; " \
 				"setexpr fw_sz ${fw_sz} + 1; "	\
 				"mmc write ${loadaddr} 0x2 ${fw_sz}; " \
@@ -251,18 +267,29 @@
 		"fi\0" \
 	"update_kernel=" \
 		"run update_set_ethernet; " \
+		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp " CONFIG_ENV_DEFAULT_UPD_KERNEL "; then " \
+			"if tftp ${upd_kernel}; then " \
 				"fatwrite mmc ${mmcdev}:${mmcpart} " \
 				"${loadaddr} ${image} ${filesize}; " \
 			"fi; "	\
 		"fi\0" \
 	"update_dt=" \
 		"run update_set_ethernet; " \
+		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp " CONFIG_ENV_DEFAULT_UPD_DT "; then " \
+			"if tftp ${upd_dt}; then " \
 				"fatwrite mmc ${mmcdev}:${mmcpart} " \
 				"${loadaddr} ${fdt_file} ${filesize}; " \
+			"fi; "	\
+		"fi\0" \
+	"update_script=" \
+		"run update_set_ethernet; " \
+		"run update_set_filename; " \
+		"if mmc dev ${mmcdev}; then "	\
+			"if tftp ${upd_script}; then " \
+				"fatwrite mmc ${mmcdev}:${mmcpart} " \
+				"${loadaddr} ${script} ${filesize}; " \
 			"fi; "	\
 		"fi\0" \
 	"mmcargs=setenv bootargs console=${console},${baudrate} " \
