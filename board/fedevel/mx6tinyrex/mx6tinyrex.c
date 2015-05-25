@@ -61,7 +61,7 @@ iomux_v3_cfg_t const uart1_pads[] = {
         MX6_PAD_SD3_DAT6__UART1_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
 
-iomux_v3_cfg_t const enet_pads[] = {
+iomux_v3_cfg_t const enet_pads1[] = {
         MX6_PAD_ENET_MDIO__ENET_MDIO       | MUX_PAD_CTRL(ENET_PAD_CTRL),
         MX6_PAD_ENET_MDC__ENET_MDC         | MUX_PAD_CTRL(ENET_PAD_CTRL),
         MX6_PAD_RGMII_TXC__RGMII_TXC       | MUX_PAD_CTRL(ENET_PAD_CTRL),
@@ -71,12 +71,12 @@ iomux_v3_cfg_t const enet_pads[] = {
         MX6_PAD_RGMII_TD3__RGMII_TD3       | MUX_PAD_CTRL(ENET_PAD_CTRL),
         MX6_PAD_RGMII_TX_CTL__RGMII_TX_CTL | MUX_PAD_CTRL(ENET_PAD_CTRL),
         MX6_PAD_ENET_REF_CLK__ENET_TX_CLK  | MUX_PAD_CTRL(ENET_PAD_CTRL),
-        MX6_PAD_RGMII_RXC__RGMII_RXC       | MUX_PAD_CTRL(ENET_PAD_CTRL),
-        MX6_PAD_RGMII_RD0__RGMII_RD0	   | MUX_PAD_CTRL(ENET_PAD_CTRL),
-        MX6_PAD_RGMII_RD1__RGMII_RD1	   | MUX_PAD_CTRL(ENET_PAD_CTRL),
-        MX6_PAD_RGMII_RD2__RGMII_RD2	   | MUX_PAD_CTRL(ENET_PAD_CTRL),
-        MX6_PAD_RGMII_RD3__RGMII_RD3	   | MUX_PAD_CTRL(ENET_PAD_CTRL),
-        MX6_PAD_RGMII_RX_CTL__RGMII_RX_CTL | MUX_PAD_CTRL(ENET_PAD_CTRL),
+        MX6_PAD_RGMII_RXC__GPIO6_IO30      | MUX_PAD_CTRL(ENET_PAD_CTRL), /* PHYAD2  = 0 */
+        MX6_PAD_RGMII_RD0__GPIO6_IO25      | MUX_PAD_CTRL(ENET_PAD_CTRL), /* MODE0  = 1 */
+        MX6_PAD_RGMII_RD1__GPIO6_IO27      | MUX_PAD_CTRL(ENET_PAD_CTRL), /* MODE1  = 1 */
+        MX6_PAD_RGMII_RD2__GPIO6_IO28      | MUX_PAD_CTRL(ENET_PAD_CTRL), /* MODE2  = 1 */
+        MX6_PAD_RGMII_RD3__GPIO6_IO29      | MUX_PAD_CTRL(ENET_PAD_CTRL), /* MODE3  = 1 */
+        MX6_PAD_RGMII_RX_CTL__GPIO6_IO24   | MUX_PAD_CTRL(ENET_PAD_CTRL), /* CLK125_EN = 1 */
         /* KSZ9021 PHY Int */
         MX6_PAD_ENET_TX_EN__GPIO1_IO28     | MUX_PAD_CTRL(NO_PAD_CTRL),
         MX6_PAD_ENET_RXD1__GPIO1_IO26      | MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -84,13 +84,36 @@ iomux_v3_cfg_t const enet_pads[] = {
         MX6_PAD_ENET_CRS_DV__GPIO1_IO25    | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
+iomux_v3_cfg_t const enet_pads2[] = {
+        MX6_PAD_RGMII_RXC__RGMII_RXC       | MUX_PAD_CTRL(ENET_PAD_CTRL),
+        MX6_PAD_RGMII_RD0__RGMII_RD0       | MUX_PAD_CTRL(ENET_PAD_CTRL),
+        MX6_PAD_RGMII_RD1__RGMII_RD1       | MUX_PAD_CTRL(ENET_PAD_CTRL),
+        MX6_PAD_RGMII_RD2__RGMII_RD2       | MUX_PAD_CTRL(ENET_PAD_CTRL),
+        MX6_PAD_RGMII_RD3__RGMII_RD3       | MUX_PAD_CTRL(ENET_PAD_CTRL),
+        MX6_PAD_RGMII_RX_CTL__RGMII_RX_CTL | MUX_PAD_CTRL(ENET_PAD_CTRL),
+};
+
 #define GPIO_ENET_INT_1         IMX_GPIO_NR(1, 28)
 #define GPIO_ENET_INT_2         IMX_GPIO_NR(1, 26)
 #define GPIO_ENET_RESET         IMX_GPIO_NR(1, 25)
+#define GPIO_ENET_CFG_PHYAD2    IMX_GPIO_NR(6, 30)
+#define GPIO_ENET_CFG_MODE0     IMX_GPIO_NR(6, 25)
+#define GPIO_ENET_CFG_MODE1     IMX_GPIO_NR(6, 27)
+#define GPIO_ENET_CFG_MODE2     IMX_GPIO_NR(6, 28)
+#define GPIO_ENET_CFG_MODE3     IMX_GPIO_NR(6, 29)
+#define GPIO_ENET_CFG_CLK125_EN IMX_GPIO_NR(6, 24)
 
 static void setup_iomux_enet(void)
 {
-        imx_iomux_v3_setup_multiple_pads(enet_pads, ARRAY_SIZE(enet_pads));
+        imx_iomux_v3_setup_multiple_pads(enet_pads1, ARRAY_SIZE(enet_pads1));
+
+        /* KSZ9021 PHY Cfg */
+        gpio_direction_output(GPIO_ENET_CFG_PHYAD2,    0);
+        gpio_direction_output(GPIO_ENET_CFG_MODE0,     1);
+        gpio_direction_output(GPIO_ENET_CFG_MODE1,     1);
+        gpio_direction_output(GPIO_ENET_CFG_MODE2,     1);
+        gpio_direction_output(GPIO_ENET_CFG_MODE3,     1);
+        gpio_direction_output(GPIO_ENET_CFG_CLK125_EN, 1);
 
         /* KSZ9021 PHY Int */
         gpio_direction_input(GPIO_ENET_INT_1);
@@ -101,6 +124,8 @@ static void setup_iomux_enet(void)
         udelay(10000);
         gpio_set_value(GPIO_ENET_RESET, 1);
         udelay(100);
+
+	imx_iomux_v3_setup_multiple_pads(enet_pads2, ARRAY_SIZE(enet_pads2));
 }
 
 iomux_v3_cfg_t const usdhc1_pads[] = {
