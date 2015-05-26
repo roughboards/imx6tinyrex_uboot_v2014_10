@@ -215,7 +215,7 @@
 #define CONFIG_ENV_DEFAULT_NETMASK	"255.255.255.0"
 #define CONFIG_ENV_DEFAULT_UPD_UBOOT	"imx6/u-boot-" CONFIG_ENV_DEFAULT_ARCH_PREFIX "-tinyrex.imx"
 #define CONFIG_ENV_DEFAULT_UPD_KERNEL	"imx6/zImage-" CONFIG_ENV_DEFAULT_ARCH_PREFIX "-tinyrex"
-#define CONFIG_ENV_DEFAULT_UPD_DT	"imx6/"        CONFIG_ENV_DEFAULT_FDT_FILE
+#define CONFIG_ENV_DEFAULT_UPD_FDT	"imx6/"        CONFIG_ENV_DEFAULT_FDT_FILE
 #define CONFIG_ENV_DEFAULT_UPD_SCRIPT	"imx6/boot-"   CONFIG_ENV_DEFAULT_ARCH_PREFIX "-tinyrex.scr"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -251,8 +251,8 @@
 		"if test ${upd_kernel}; then; else " \
 			"setenv upd_kernel " CONFIG_ENV_DEFAULT_UPD_KERNEL "; " \
 		"fi; " \
-		"if test ${upd_dt}; then; else " \
-			"setenv upd_dt " CONFIG_ENV_DEFAULT_UPD_DT         "; " \
+		"if test ${upd_fdt}; then; else " \
+			"setenv upd_fdt " CONFIG_ENV_DEFAULT_UPD_FDT       "; " \
 		"fi; " \
 		"if test ${upd_script}; then; else " \
 			"setenv upd_script " CONFIG_ENV_DEFAULT_UPD_SCRIPT "; " \
@@ -276,11 +276,11 @@
 				"${loadaddr} ${image} ${filesize}; " \
 			"fi; "	\
 		"fi\0" \
-	"update_dt=" \
+	"update_fdt=" \
 		"run update_set_ethernet; " \
 		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp ${upd_dt}; then " \
+			"if tftp ${upd_fdt}; then " \
 				"fatwrite mmc ${mmcdev}:${mmcpart} " \
 				"${loadaddr} ${fdt_file} ${filesize}; " \
 			"fi; "	\

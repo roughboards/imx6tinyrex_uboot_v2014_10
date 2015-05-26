@@ -49,6 +49,8 @@ DECLARE_GLOBAL_DATA_PTR;
                         PAD_CTL_HYS         | PAD_CTL_ODE       | \
                         PAD_CTL_SRE_FAST)
 
+#define RST_PAD_CTRL   (PAD_CTL_ODE         | PAD_CTL_SRE_FAST)
+
 int dram_init(void)
 {
         gd->ram_size = get_ram_size((void *)PHYS_SDRAM, PHYS_SDRAM_SIZE);
@@ -81,7 +83,7 @@ iomux_v3_cfg_t const enet_pads1[] = {
         MX6_PAD_ENET_TX_EN__GPIO1_IO28     | MUX_PAD_CTRL(NO_PAD_CTRL),
         MX6_PAD_ENET_RXD1__GPIO1_IO26      | MUX_PAD_CTRL(NO_PAD_CTRL),
         /* KSZ9021 PHY Reset */
-        MX6_PAD_ENET_CRS_DV__GPIO1_IO25    | MUX_PAD_CTRL(NO_PAD_CTRL),
+        MX6_PAD_ENET_CRS_DV__GPIO1_IO25    | MUX_PAD_CTRL(RST_PAD_CTRL),
 };
 
 iomux_v3_cfg_t const enet_pads2[] = {
