@@ -49,7 +49,8 @@ DECLARE_GLOBAL_DATA_PTR;
                         PAD_CTL_HYS         | PAD_CTL_ODE       | \
                         PAD_CTL_SRE_FAST)
 
-#define RST_PAD_CTRL   (PAD_CTL_ODE         | PAD_CTL_SRE_FAST)
+#define RST_PAD_CTRL   (PAD_CTL_ODE         | PAD_CTL_DSE_40ohm | \
+                        PAD_CTL_SRE_FAST)
 
 int dram_init(void)
 {
