@@ -1,0 +1,8 @@
+MX6REX BOARD
+M:	Name <support@voipac.com>
+S:	Maintained
+F:	board/fedevel/mx6rex/
+F:	include/configs/mx6rex.h
+F:	configs/mx6srex_defconfig
+F:	configs/mx6dlrex_defconfig
+F:	configs/mx6qrex_defconfig

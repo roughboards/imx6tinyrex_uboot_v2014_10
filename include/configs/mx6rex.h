@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2015 Voipac.
  *
- * Configuration settings for the Fedevel i.MX6 TINYREX board.
+ * Configuration settings for the Fedevel i.MX6 REX board.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
@@ -18,22 +18,22 @@
 #define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_DISPLAY_BOARDINFO
 
-#define MACH_TYPE_MX6TINYREX		5025
-#define CONFIG_MACH_TYPE		MACH_TYPE_MX6TINYREX
+#define MACH_TYPE_MX6REX		4777
+#define CONFIG_MACH_TYPE		MACH_TYPE_MX6REX
 #define CONFIG_BOOTDELAY		3
 
 #define CONFIG_LOADADDR			0x10800000
 #define CONFIG_SYS_TEXT_BASE		0x17800000
 
 #if defined(CONFIG_MX6Q)
-#define CONFIG_TINY_DEFAULT_ARCH_PREFIX	"imx6q"
-#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_2G
+#define CONFIG_REX_DEFAULT_ARCH_PREFIX	"imx6q"
+#define CONFIG_REX_PHYS_SDRAM_SIZE	SZ_2G
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_TINY_DEFAULT_ARCH_PREFIX	"imx6dl"
-#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_1G
+#define CONFIG_REX_DEFAULT_ARCH_PREFIX	"imx6dl"
+#define CONFIG_REX_PHYS_SDRAM_SIZE	SZ_2G
 #elif defined(CONFIG_MX6S)
-#define CONFIG_TINY_DEFAULT_ARCH_PREFIX	"imx6s"
-#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_1G
+#define CONFIG_REX_DEFAULT_ARCH_PREFIX	"imx6s"
+#define CONFIG_REX_PHYS_SDRAM_SIZE	SZ_1G
 #endif
 
 /* TAGs */
@@ -60,7 +60,7 @@
 /* MMC Configs */
 #define CONFIG_FSL_ESDHC
 #define CONFIG_FSL_USDHC
-#define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC3_BASE_ADDR
+#define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
 
 #define CONFIG_MMC
 #define CONFIG_CMD_MMC
@@ -72,7 +72,7 @@
 #define CONFIG_CMD_EXT4
 #define CONFIG_CMD_EXT4_WRITE
 #define CONFIG_DOS_PARTITION
-#define CONFIG_SYS_FSL_USDHC_NUM	3
+#define CONFIG_SYS_FSL_USDHC_NUM	1
 
 /* SPI Configs */
 #define CONFIG_CMD_SF
@@ -80,8 +80,8 @@
 #define CONFIG_SPI_FLASH
 #define CONFIG_SPI_FLASH_SST
 #define CONFIG_MXC_SPI
-#define CONFIG_SF_DEFAULT_BUS		0
-#define CONFIG_SF_DEFAULT_CS		0
+#define CONFIG_SF_DEFAULT_BUS		2
+#define CONFIG_SF_DEFAULT_CS		2
 #define CONFIG_SF_DEFAULT_SPEED		20000000
 #define CONFIG_SF_DEFAULT_MODE		SPI_MODE_0
 #endif
@@ -132,7 +132,7 @@
 /* Physical Memory Map */
 #define CONFIG_NR_DRAM_BANKS		1
 #define PHYS_SDRAM			MMDC0_ARB_BASE_ADDR
-#define PHYS_SDRAM_SIZE			CONFIG_TINY_PHYS_SDRAM_SIZE
+#define PHYS_SDRAM_SIZE			CONFIG_REX_PHYS_SDRAM_SIZE
 
 #define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM
 #define CONFIG_SYS_INIT_RAM_ADDR	IRAM_BASE_ADDR
@@ -145,12 +145,16 @@
 
 /* FLASH and environment organization */
 #define CONFIG_SYS_NO_FLASH
-#define CONFIG_ENV_IS_IN_MMC
+#define CONFIG_ENV_IS_IN_SPI_FLASH
 
-#if defined(CONFIG_ENV_IS_IN_MMC)
+#if defined(CONFIG_ENV_IS_IN_SPI_FLASH)
 #define CONFIG_ENV_SIZE			(SZ_8K)
 #define CONFIG_ENV_OFFSET		(8 * SZ_64K)
-#define CONFIG_SYS_MMC_ENV_DEV		0	/* SDHC3 */
+#define CONFIG_ENV_SECT_SIZE		CONFIG_ENV_SIZE
+#define CONFIG_ENV_SPI_BUS		CONFIG_SF_DEFAULT_BUS
+#define CONFIG_ENV_SPI_CS		CONFIG_SF_DEFAULT_CS
+#define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
+#define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
 #endif
 
 /* Command definition */
@@ -212,15 +216,15 @@
 /* Env settings */
 #define CONFIG_ENV_CONSOLE_DEV		"ttymxc0"
 #define CONFIG_ENV_MMCROOT		"/dev/mmcblk2p2"
-#define CONFIG_ENV_DEFAULT_FDT_FILE	CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.dtb"
+#define CONFIG_ENV_DEFAULT_FDT_FILE	CONFIG_REX_DEFAULT_ARCH_PREFIX "-rex.dtb"
 #define CONFIG_ENV_DEFAULT_ETH_ADDR	"00:0D:15:00:D1:75"
 #define CONFIG_ENV_DEFAULT_CLIENT_IP	"192.168.0.150"
 #define CONFIG_ENV_DEFAULT_SERVER_IP	"192.168.0.1"
 #define CONFIG_ENV_DEFAULT_NETMASK	"255.255.255.0"
-#define CONFIG_ENV_DEFAULT_UPD_UBOOT	"imx6/u-boot-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.imx"
-#define CONFIG_ENV_DEFAULT_UPD_KERNEL	"imx6/zImage-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex"
+#define CONFIG_ENV_DEFAULT_UPD_UBOOT	"imx6/u-boot-" CONFIG_REX_DEFAULT_ARCH_PREFIX "-rex.imx"
+#define CONFIG_ENV_DEFAULT_UPD_KERNEL	"imx6/zImage-" CONFIG_REX_DEFAULT_ARCH_PREFIX "-rex"
 #define CONFIG_ENV_DEFAULT_UPD_FDT	"imx6/"        CONFIG_ENV_DEFAULT_FDT_FILE
-#define CONFIG_ENV_DEFAULT_UPD_SCRIPT	"imx6/boot-"   CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.scr"
+#define CONFIG_ENV_DEFAULT_UPD_SCRIPT	"imx6/boot-"   CONFIG_REX_DEFAULT_ARCH_PREFIX "-rex.scr"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"script=boot.scr\0" \
@@ -232,7 +236,7 @@
 	"console=" CONFIG_ENV_CONSOLE_DEV "\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
-	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV) "\0" \
+	"mmcdev=0\0" \
 	"mmcpart=1\0" \
 	"mmcroot=" CONFIG_ENV_MMCROOT " rootwait rw\0" \
 	"spidev=" __stringify(CONFIG_ENV_SPI_BUS) "\0" \
@@ -266,11 +270,13 @@
 	"update_uboot=" \
 		"run update_set_ethernet; " \
 		"run update_set_filename; " \
-		"if mmc dev ${mmcdev}; then "	\
+		"if sf probe ${spidev}:${spics}; then "	\
 			"if tftp ${upd_uboot}; then " \
-				"setexpr fw_sz ${filesize} / 0x200; " \
-				"setexpr fw_sz ${fw_sz} + 1; " \
-				"mmc write ${loadaddr} 0x2 ${fw_sz}; " \
+				"setexpr align_sz ${filesize} + 0x7FFF; " \
+				"setexpr align_sz ${align_sz} / 0x8000; " \
+				"setexpr align_sz ${align_sz} * 0x8000; " \
+				"sf erase 0x0 ${align_sz}; " \
+				"sf write ${loadaddr} 0x400 ${filesize}; " \
 			"fi; "	\
 		"fi\0" \
 	"update_kernel=" \
