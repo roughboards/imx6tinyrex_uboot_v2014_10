@@ -10,20 +10,26 @@ mx6q/dl/s tinyrex u-boot v2014.10
     export CROSS_COMPILE=arm-linux-gnueabihf-
     export ARCH=arm
 
-# Build (imx6s)
+# Build (imx6s tinyrex)
     make distclean
     make mx6stinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6s-tinyrex.imx
     
-# Build (imx6dl)
+# Build (imx6dl tinyrex)
     make distclean
     make mx6dltinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6dl-tinyrex.imx
 
-# Build (imx6q)
+# Build (imx6q tinyrex)
     make distclean
     make mx6qtinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-tinyrex.imx
+
+# Build (imx6q rex)
+    make distclean
+    make mx6rex_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-rex.imx
