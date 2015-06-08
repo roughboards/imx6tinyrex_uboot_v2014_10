@@ -30,6 +30,6 @@ mx6q/dl/s tinyrex u-boot v2014.10
 
 # Build (imx6q rex)
     make distclean
-    make mx6rex_config
+    make mx6qrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-rex.imx
