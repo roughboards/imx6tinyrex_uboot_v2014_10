@@ -212,23 +212,24 @@
 /* Env settings */
 #define CONFIG_ENV_CONSOLE_DEV		"ttymxc0"
 #define CONFIG_ENV_MMCROOT		"/dev/mmcblk2p2"
+#define CONFIG_ENV_DEFAULT_UBT_FILE	"u-boot-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.imx"
+#define CONFIG_ENV_DEFAULT_IMG_FILE	"zImage-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex"
 #define CONFIG_ENV_DEFAULT_FDT_FILE	CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.dtb"
+#define CONFIG_ENV_DEFAULT_SCR_FILE	"boot-"   CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.scr"
 #define CONFIG_ENV_DEFAULT_ETH_ADDR	"00:0D:15:00:D1:75"
 #define CONFIG_ENV_DEFAULT_CLIENT_IP	"192.168.0.150"
 #define CONFIG_ENV_DEFAULT_SERVER_IP	"192.168.0.1"
 #define CONFIG_ENV_DEFAULT_NETMASK	"255.255.255.0"
-#define CONFIG_ENV_DEFAULT_UPD_UBOOT	"imx6/u-boot-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.imx"
-#define CONFIG_ENV_DEFAULT_UPD_KERNEL	"imx6/zImage-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex"
-#define CONFIG_ENV_DEFAULT_UPD_FDT	"imx6/"        CONFIG_ENV_DEFAULT_FDT_FILE
-#define CONFIG_ENV_DEFAULT_UPD_SCRIPT	"imx6/boot-"   CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex.scr"
+#define CONFIG_ENV_DEFAULT_TFTP_DIR     "imx6"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"script=boot.scr\0" \
-	"image=zImage\0" \
+        "tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
+	"uboot="    CONFIG_ENV_DEFAULT_UBT_FILE "\0" \
+	"image="    CONFIG_ENV_DEFAULT_IMG_FILE "\0" \
 	"fdt_file=" CONFIG_ENV_DEFAULT_FDT_FILE "\0" \
+	"script="   CONFIG_ENV_DEFAULT_SCR_FILE "\0" \
 	"fdt_addr=0x18000000\0" \
 	"boot_fdt=try\0" \
-	"ip_dyn=yes\0" \
 	"console=" CONFIG_ENV_CONSOLE_DEV "\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
@@ -237,7 +238,7 @@
 	"mmcroot=" CONFIG_ENV_MMCROOT " rootwait rw\0" \
 	"spidev=" __stringify(CONFIG_ENV_SPI_BUS) "\0" \
 	"spics=" __stringify(CONFIG_ENV_SPI_CS) "\0" \
-	"update_set_ethernet=" \
+	"set_ethernet=" \
 		"if test ${ethaddr}; then; else " \
 			"setenv ethaddr  " CONFIG_ENV_DEFAULT_ETH_ADDR  "; " \
 		"fi; " \
@@ -252,50 +253,50 @@
 		"fi\0" \
 	"update_set_filename=" \
 		"if test ${upd_uboot}; then; else " \
-			"setenv upd_uboot " CONFIG_ENV_DEFAULT_UPD_UBOOT   "; " \
+			"setenv upd_uboot " CONFIG_ENV_DEFAULT_UBT_FILE  "; " \
 		"fi; " \
 		"if test ${upd_kernel}; then; else " \
-			"setenv upd_kernel " CONFIG_ENV_DEFAULT_UPD_KERNEL "; " \
+			"setenv upd_kernel " CONFIG_ENV_DEFAULT_IMG_FILE "; " \
 		"fi; " \
 		"if test ${upd_fdt}; then; else " \
-			"setenv upd_fdt " CONFIG_ENV_DEFAULT_UPD_FDT       "; " \
+			"setenv upd_fdt    " CONFIG_ENV_DEFAULT_FDT_FILE "; " \
 		"fi; " \
 		"if test ${upd_script}; then; else " \
-			"setenv upd_script " CONFIG_ENV_DEFAULT_UPD_SCRIPT "; " \
+			"setenv upd_script " CONFIG_ENV_DEFAULT_SCR_FILE "; " \
 		"fi\0" \
 	"update_uboot=" \
-		"run update_set_ethernet; " \
+		"run set_ethernet; " \
 		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp ${upd_uboot}; then " \
+			"if tftp ${tftp_dir}/${upd_uboot}; then " \
 				"setexpr fw_sz ${filesize} / 0x200; " \
 				"setexpr fw_sz ${fw_sz} + 1; " \
 				"mmc write ${loadaddr} 0x2 ${fw_sz}; " \
 			"fi; "	\
 		"fi\0" \
 	"update_kernel=" \
-		"run update_set_ethernet; " \
+		"run set_ethernet; " \
 		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp ${upd_kernel}; then " \
+			"if tftp ${tftp_dir}/${upd_kernel}; then " \
 				"fatwrite mmc ${mmcdev}:${mmcpart} " \
 				"${loadaddr} ${image} ${filesize}; " \
 			"fi; "	\
 		"fi\0" \
 	"update_fdt=" \
-		"run update_set_ethernet; " \
+		"run set_ethernet; " \
 		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp ${upd_fdt}; then " \
+			"if tftp ${tftp_dir}/${upd_fdt}; then " \
 				"fatwrite mmc ${mmcdev}:${mmcpart} " \
 				"${loadaddr} ${fdt_file} ${filesize}; " \
 			"fi; "	\
 		"fi\0" \
 	"update_script=" \
-		"run update_set_ethernet; " \
+		"run set_ethernet; " \
 		"run update_set_filename; " \
 		"if mmc dev ${mmcdev}; then "	\
-			"if tftp ${upd_script}; then " \
+			"if tftp ${tftp_dir}/${upd_script}; then " \
 				"fatwrite mmc ${mmcdev}:${mmcpart} " \
 				"${loadaddr} ${script} ${filesize}; " \
 			"fi; "	\
@@ -325,17 +326,13 @@
 		"fi;\0" \
 	"netargs=setenv bootargs console=${console},${baudrate} " \
 		"root=/dev/nfs " \
-	"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
-		"netboot=echo Booting from net ...; " \
+		"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
+	"netboot=echo Booting from net ...; " \
+		"run set_ethernet; " \
 		"run netargs; " \
-		"if test ${ip_dyn} = yes; then " \
-			"setenv get_cmd dhcp; " \
-		"else " \
-			"setenv get_cmd tftp; " \
-		"fi; " \
-		"${get_cmd} ${image}; " \
+		"tftp ${tftp_dir}/${image}; " \
 		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
-			"if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
+			"if tftp ${fdt_addr} ${tftp_dir}/${fdt_file}; then " \
 				"bootz ${loadaddr} - ${fdt_addr}; " \
 			"else " \
 				"if test ${boot_fdt} = try; then " \
