@@ -28,6 +28,9 @@
 #if defined(CONFIG_MX6Q)
 #define CONFIG_REX_DEFAULT_ARCH_PREFIX	"imx6q"
 #define CONFIG_REX_PHYS_SDRAM_SIZE	SZ_2G
+#elif defined(CONFIG_MX6D)
+#define CONFIG_REX_DEFAULT_ARCH_PREFIX	"imx6d"
+#define CONFIG_REX_PHYS_SDRAM_SIZE	SZ_512M
 #elif defined(CONFIG_MX6DL)
 #define CONFIG_REX_DEFAULT_ARCH_PREFIX	"imx6dl"
 #define CONFIG_REX_PHYS_SDRAM_SIZE	SZ_2G
@@ -229,7 +232,7 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
         "tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
 	"uboot="    CONFIG_ENV_DEFAULT_UBT_FILE "\0" \
-	"image="    CONFIG_ENV_DEFAULT_IMG_FILE "\0" \
+	"image="    "zImage" "\0" \
 	"fdt_file=" CONFIG_ENV_DEFAULT_FDT_FILE "\0" \
 	"script="   CONFIG_ENV_DEFAULT_SCR_FILE "\0" \
 	"fdt_addr=0x18000000\0" \

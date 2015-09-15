@@ -29,6 +29,18 @@ mx6q/dl/s tinyrex u-boot v2014.10
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-tinyrex.imx
 
+#### Build (imx6dl rex)
+    make distclean
+    make mx6dlrex_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6dl-rex.imx
+
+#### Build (imx6d rex)
+    make distclean
+    make mx6drex_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6d-rex.imx
+
 #### Build (imx6q rex)
     make distclean
     make mx6qrex_config
