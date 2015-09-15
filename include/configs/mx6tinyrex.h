@@ -225,7 +225,7 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
         "tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
 	"uboot="    CONFIG_ENV_DEFAULT_UBT_FILE "\0" \
-	"image="    CONFIG_ENV_DEFAULT_IMG_FILE "\0" \
+	"image="    "zImage" "\0" \
 	"fdt_file=" CONFIG_ENV_DEFAULT_FDT_FILE "\0" \
 	"script="   CONFIG_ENV_DEFAULT_SCR_FILE "\0" \
 	"fdt_addr=0x18000000\0" \
