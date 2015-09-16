@@ -48,7 +48,7 @@ mx6q/dl/s tinyrex u-boot v2014.10
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-rex.imx
 
 ## IMPORTANT
-    u-boot-imx6q-rex.imx must be flashed into spi flash at offset 0x400.  
+    u-boot-imx6q-rex.imx must be flashed into spi flash at offset 0x400.
     
 ## Some lines that might be helpful
     setenv ipaddr 192.168.0.150
