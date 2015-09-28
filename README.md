@@ -18,36 +18,42 @@ mx6q/dl/d rex u-boot v2014.10
     make mx6stinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6s-tinyrex.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6s-tinyrex.bin
     
 #### Build (imx6dl tinyrex)
     make distclean
     make mx6dltinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6dl-tinyrex.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6dl-tinyrex.bin
 
 #### Build (imx6q tinyrex)
     make distclean
     make mx6qtinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-tinyrex.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6q-tinyrex.bin
 
 #### Build (imx6dl rex)
     make distclean
     make mx6dlrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6dl-rex.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6dl-rex.bin
 
 #### Build (imx6d rex)
     make distclean
     make mx6drex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6d-rex.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6d-rex.bin
 
 #### Build (imx6q rex)
     make distclean
     make mx6qrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-rex.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6q-rex.bin
 
 ## IMPORTANT
     u-boot-imx6q-rex.imx must be flashed into spi flash at offset 0x400.
