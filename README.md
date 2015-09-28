@@ -1,5 +1,6 @@
 ## imx6tinyrex_uboot_v2014_10
-mx6q/dl/s tinyrex u-boot v2014.10 
+mx6q/dl/s tinyrex u-boot v2014.10
+
 mx6q/dl/d rex u-boot v2014.10 
 
 ## Download repository
