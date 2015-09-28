@@ -154,6 +154,16 @@ static void setup_spi(void)
         imx_iomux_v3_setup_multiple_pads(ecspi3_pads, ARRAY_SIZE(ecspi3_pads));
 }
 
+iomux_v3_cfg_t const pcie_pads[] = {
+        MX6_PAD_CSI0_DATA_EN__GPIO5_IO20 | MUX_PAD_CTRL(USDHC_PAD_CTRL), /* WAKE */
+        MX6_PAD_EIM_A25__GPIO5_IO02 | MUX_PAD_CTRL(NO_PAD_CTRL), /* RESET */
+};
+
+static void setup_pcie(void)
+{
+        imx_iomux_v3_setup_multiple_pads(pcie_pads, ARRAY_SIZE(pcie_pads));
+}
+
 static void setup_iomux_uart(void)
 {
 	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));

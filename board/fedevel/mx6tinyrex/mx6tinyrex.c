@@ -233,7 +233,7 @@ static struct i2c_pads_info i2c2_pad_info = {
 };
 
 iomux_v3_cfg_t const pcie_pads[] = {
-        MX6_PAD_GPIO_17__GPIO7_IO12 | MUX_PAD_CTRL(NO_PAD_CTRL), /* WAKE */
+        MX6_PAD_GPIO_17__GPIO7_IO12 | MUX_PAD_CTRL(USDHC_PAD_CTRL), /* WAKE */
         MX6_PAD_EIM_A25__GPIO5_IO02 | MUX_PAD_CTRL(NO_PAD_CTRL), /* RESET */
 };
 
