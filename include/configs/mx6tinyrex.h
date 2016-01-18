@@ -27,13 +27,27 @@
 
 #if defined(CONFIG_MX6Q)
 #define CONFIG_TINY_DEFAULT_ARCH_PREFIX	"imx6q"
-#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_2G
+#elif defined(CONFIG_MX6D)
+#define CONFIG_TINY_DEFAULT_ARCH_PREFIX	"imx6d"
 #elif defined(CONFIG_MX6DL)
 #define CONFIG_TINY_DEFAULT_ARCH_PREFIX	"imx6dl"
-#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_1G
 #elif defined(CONFIG_MX6S)
 #define CONFIG_TINY_DEFAULT_ARCH_PREFIX	"imx6s"
+#endif
+
+#if defined(CONFIG_DDR_256MB)
+#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_256M
+#elif defined(CONFIG_DDR_512MB)
+#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_512M
+#elif defined(CONFIG_DDR_1GB)
 #define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_1G
+#elif defined(CONFIG_DDR_2GB)
+#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_2G
+#elif defined(CONFIG_DDR_4GB)
+#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_4G
+#else
+#define CONFIG_TINY_PHYS_SDRAM_SIZE	SZ_256M
+#warning "Using default SDRAM size"
 #endif
 
 /* TAGs */
