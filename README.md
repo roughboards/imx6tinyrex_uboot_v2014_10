@@ -13,42 +13,70 @@ mx6q/dl/d rex u-boot v2014.10
     export ARCH=arm
 
 ## Build
-#### Build (imx6s tinyrex)
+#### Build (imx6s tinyrexlite) (production)
+    make distclean
+    make mx6tinyrexlite_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6-tinyrexlite.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6-tinyrexlite.bin
+
+#### Build (imx6s tinyrexbasic) (production)
+    make distclean
+    make mx6tinyrexbasic_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6-tinyrexbasic.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6-tinyrexbasic.bin
+
+#### Build (imx6d tinyrexpro) (production)
+    make distclean
+    make mx6tinyrexpro_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6-tinyrexpro.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6-tinyrexpro.bin
+
+#### Build (imx6s tinyrexmax) (production)
+    make distclean
+    make mx6tinyrexmax_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6-tinyrexmax.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6-tinyrexmax.bin
+
+#### Build (imx6s tinyrex) (prototype)
     make distclean
     make mx6stinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6s-tinyrex.imx
     cp u-boot.bin /srv/tftp/imx6/u-boot-imx6s-tinyrex.bin
     
-#### Build (imx6dl tinyrex)
+#### Build (imx6dl tinyrex) (prototype)
     make distclean
     make mx6dltinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6dl-tinyrex.imx
     cp u-boot.bin /srv/tftp/imx6/u-boot-imx6dl-tinyrex.bin
 
-#### Build (imx6q tinyrex)
+#### Build (imx6q tinyrex) (prototype)
     make distclean
     make mx6qtinyrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-tinyrex.imx
     cp u-boot.bin /srv/tftp/imx6/u-boot-imx6q-tinyrex.bin
 
-#### Build (imx6dl rex)
+#### Build (imx6dl rex) (production)
     make distclean
     make mx6dlrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6dl-rex.imx
     cp u-boot.bin /srv/tftp/imx6/u-boot-imx6dl-rex.bin
 
-#### Build (imx6d rex)
+#### Build (imx6d rex) (production)
     make distclean
     make mx6drex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6d-rex.imx
     cp u-boot.bin /srv/tftp/imx6/u-boot-imx6d-rex.bin
 
-#### Build (imx6q rex)
+#### Build (imx6q rex) (production)
     make distclean
     make mx6qrex_config
     make
