@@ -526,6 +526,6 @@ int board_late_init(void)
 
 int checkboard(void)
 {
-        puts("Board: MX6 Tiny Rex\n");
+        puts("Board: MX6 TinyRex - " CONFIG_MODULE_TYPE_POSTFIX "\n");
         return 0;
 }
