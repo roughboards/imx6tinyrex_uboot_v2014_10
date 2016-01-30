@@ -1,7 +1,9 @@
 ## imx6tinyrex_uboot_v2014_10
-mx6q/dl/s tinyrex u-boot v2014.10
+mx6max/pro/basic tinyrex u-boot v2014.10 (production)
+mx6q/dl/s tinyrex u-boot v2014.10 (prototypes)
 
-mx6q/dl/d rex u-boot v2014.10 
+mx6pro/basic rex u-boot v2014.10 (production)
+mx6dl rex u-boot v2014.10 (prototypes)
 
 ## Download repository
     git clone https://github.com/voipac/imx6tinyrex_uboot_v2014_10
@@ -62,26 +64,33 @@ mx6q/dl/d rex u-boot v2014.10
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-tinyrex.imx
     cp u-boot.bin /srv/tftp/imx6/u-boot-imx6q-tinyrex.bin
 
-#### Build (imx6dl rex) (production)
+#### Build (imx6dl rex) (prototype)
     make distclean
     make mx6dlrex_config
     make
     cp u-boot.imx /srv/tftp/imx6/u-boot-imx6dl-rex.imx
     cp u-boot.bin /srv/tftp/imx6/u-boot-imx6dl-rex.bin
 
-#### Build (imx6d rex) (production)
+#### Build (imx6d rexbasic) (production)
     make distclean
-    make mx6drex_config
+    make mx6rexbasic_config
     make
-    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6d-rex.imx
-    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6d-rex.bin
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6-rexbasic.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6-rexbasic.bin
 
-#### Build (imx6q rex) (production)
+#### Build (imx6q rexpro) (production)
     make distclean
-    make mx6qrex_config
+    make mx6rexpro_config
     make
-    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6q-rex.imx
-    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6q-rex.bin
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6-rexpro.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6-rexpro.bin
+
+#### Build (imx6q rexpro) (SD card version)
+    make distclean
+    make mx6rexprosd_config
+    make
+    cp u-boot.imx /srv/tftp/imx6/u-boot-imx6-rexprosd.imx
+    cp u-boot.bin /srv/tftp/imx6/u-boot-imx6-rexprosd.bin
 
 ## IMPORTANT
     u-boot-imx6q-rex.imx must be flashed into spi flash at offset 0x400.

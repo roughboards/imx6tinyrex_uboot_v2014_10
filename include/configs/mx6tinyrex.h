@@ -18,20 +18,20 @@
 #define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_DISPLAY_BOARDINFO
 
-#define MACH_TYPE_MX6TINYREX				5025
-#define CONFIG_MACH_TYPE					MACH_TYPE_MX6TINYREX
-#define CONFIG_BOOTDELAY					3
+#define MACH_TYPE_MX6TINYREX                5025
+#define CONFIG_MACH_TYPE                    MACH_TYPE_MX6TINYREX
+#define CONFIG_BOOTDELAY                    3
 
-#define CONFIG_LOADADDR						0x10800000
-#define CONFIG_SYS_TEXT_BASE				0x17800000
+#define CONFIG_LOADADDR                     0x10800000
+#define CONFIG_SYS_TEXT_BASE                0x17800000
 
-#define CONFIG_TINY_DEFAULT_ARCH_PREFIX		CONFIG_MODULE_TYPE_PREFIX
-#define CONFIG_TINY_DEFAULT_ARCH_POSTFIX	CONFIG_MODULE_TYPE_POSTFIX
+#define CONFIG_TINY_DEFAULT_ARCH_PREFIX     CONFIG_MODULE_TYPE_PREFIX
+#define CONFIG_TINY_DEFAULT_ARCH_POSTFIX    CONFIG_MODULE_TYPE_POSTFIX
 
 #if defined(CONFIG_DDR_SIZE)
-#define CONFIG_TINY_PHYS_SDRAM_SIZE			CONFIG_DDR_SIZE
+#define CONFIG_TINY_PHYS_SDRAM_SIZE         CONFIG_DDR_SIZE
 #else
-#define CONFIG_TINY_PHYS_SDRAM_SIZE			SZ_256M
+#define CONFIG_TINY_PHYS_SDRAM_SIZE         SZ_256M
 #warning "Using default SDRAM size"
 #endif
 
@@ -44,7 +44,7 @@
 #define CONFIG_SYS_GENERIC_BOARD
 
 /* Size of malloc() pool */
-#define CONFIG_SYS_MALLOC_LEN				(10 * SZ_1M)
+#define CONFIG_SYS_MALLOC_LEN               (10 * SZ_1M)
 
 #define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_BOARD_LATE_INIT
@@ -54,12 +54,12 @@
 
 /* Uart Configs */
 #define CONFIG_MXC_UART
-#define CONFIG_MXC_UART_BASE				UART1_BASE
+#define CONFIG_MXC_UART_BASE                UART1_BASE
 
 /* MMC Configs */
 #define CONFIG_FSL_ESDHC
 #define CONFIG_FSL_USDHC
-#define CONFIG_SYS_FSL_ESDHC_ADDR			USDHC3_BASE_ADDR
+#define CONFIG_SYS_FSL_ESDHC_ADDR           USDHC3_BASE_ADDR
 
 #define CONFIG_MMC
 #define CONFIG_CMD_MMC
@@ -71,7 +71,7 @@
 #define CONFIG_CMD_EXT4
 #define CONFIG_CMD_EXT4_WRITE
 #define CONFIG_DOS_PARTITION
-#define CONFIG_SYS_FSL_USDHC_NUM			3
+#define CONFIG_SYS_FSL_USDHC_NUM            3
 
 /* SPI Configs */
 #define CONFIG_CMD_SF
@@ -79,10 +79,10 @@
 #define CONFIG_SPI_FLASH
 #define CONFIG_SPI_FLASH_SST
 #define CONFIG_MXC_SPI
-#define CONFIG_SF_DEFAULT_BUS				0
-#define CONFIG_SF_DEFAULT_CS				0
-#define CONFIG_SF_DEFAULT_SPEED				20000000
-#define CONFIG_SF_DEFAULT_MODE				SPI_MODE_0
+#define CONFIG_SF_DEFAULT_BUS               0
+#define CONFIG_SF_DEFAULT_CS                0
+#define CONFIG_SF_DEFAULT_SPEED             20000000
+#define CONFIG_SF_DEFAULT_MODE              SPI_MODE_0
 #endif
 
 /* Ethernet config */
@@ -92,10 +92,10 @@
 #define CONFIG_CMD_NET
 #define CONFIG_FEC_MXC
 #define CONFIG_MII
-#define IMX_FEC_BASE						ENET_BASE_ADDR
-#define CONFIG_FEC_XCV_TYPE					RGMII
-#define CONFIG_ETHPRIME						"FEC"
-#define CONFIG_FEC_MXC_PHYADDR				3
+#define IMX_FEC_BASE                        ENET_BASE_ADDR
+#define CONFIG_FEC_XCV_TYPE                 RGMII
+#define CONFIG_ETHPRIME                     "FEC"
+#define CONFIG_FEC_MXC_PHYADDR              3
 
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_MICREL
@@ -103,39 +103,39 @@
 
 /* allow to overwrite serial and ethaddr */
 #define CONFIG_ENV_OVERWRITE
-#define CONFIG_CONS_INDEX					1
-#define CONFIG_BAUDRATE						115200
+#define CONFIG_CONS_INDEX                   1
+#define CONFIG_BAUDRATE                     115200
 
 /* Miscellaneous configurable options */
 #define CONFIG_SYS_LONGHELP
 #define CONFIG_SYS_HUSH_PARSER
-#define CONFIG_SYS_PROMPT					"TinyRex U-Boot > "
-#define CONFIG_SYS_PROMPT_HUSH_PS2			"TinyRex U-Boot > "
+#define CONFIG_SYS_PROMPT                   "TinyRex U-Boot > "
+#define CONFIG_SYS_PROMPT_HUSH_PS2          "TinyRex U-Boot > "
 #define CONFIG_AUTO_COMPLETE
-#define CONFIG_SYS_CBSIZE					256
+#define CONFIG_SYS_CBSIZE                   256
 
 /* Print Buffer Size */
-#define CONFIG_SYS_PBSIZE					(CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
-#define CONFIG_SYS_MAXARGS					16
-#define CONFIG_SYS_BARGSIZE					CONFIG_SYS_CBSIZE
+#define CONFIG_SYS_PBSIZE                   (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
+#define CONFIG_SYS_MAXARGS                  16
+#define CONFIG_SYS_BARGSIZE                 CONFIG_SYS_CBSIZE
 
-#define CONFIG_SYS_MEMTEST_START			(MMDC0_ARB_BASE_ADDR)
-#define CONFIG_SYS_MEMTEST_END				(CONFIG_SYS_MEMTEST_START + SZ_1M)
-#define CONFIG_SYS_MEMTEST_SCRATCH			CONFIG_LOADADDR
+#define CONFIG_SYS_MEMTEST_START            (MMDC0_ARB_BASE_ADDR)
+#define CONFIG_SYS_MEMTEST_END              (CONFIG_SYS_MEMTEST_START + SZ_1M)
+#define CONFIG_SYS_MEMTEST_SCRATCH          CONFIG_LOADADDR
 
-#define CONFIG_SYS_LOAD_ADDR				CONFIG_LOADADDR
+#define CONFIG_SYS_LOAD_ADDR                CONFIG_LOADADDR
 
 #define CONFIG_CMDLINE_EDITING
-#define CONFIG_STACKSIZE					SZ_128K
+#define CONFIG_STACKSIZE                    SZ_128K
 
 /* Physical Memory Map */
-#define CONFIG_NR_DRAM_BANKS				1
-#define PHYS_SDRAM							MMDC0_ARB_BASE_ADDR
-#define PHYS_SDRAM_SIZE						CONFIG_TINY_PHYS_SDRAM_SIZE
+#define CONFIG_NR_DRAM_BANKS                1
+#define PHYS_SDRAM                          MMDC0_ARB_BASE_ADDR
+#define PHYS_SDRAM_SIZE                     CONFIG_TINY_PHYS_SDRAM_SIZE
 
-#define CONFIG_SYS_SDRAM_BASE				PHYS_SDRAM
-#define CONFIG_SYS_INIT_RAM_ADDR			IRAM_BASE_ADDR
-#define CONFIG_SYS_INIT_RAM_SIZE			IRAM_SIZE
+#define CONFIG_SYS_SDRAM_BASE               PHYS_SDRAM
+#define CONFIG_SYS_INIT_RAM_ADDR            IRAM_BASE_ADDR
+#define CONFIG_SYS_INIT_RAM_SIZE            IRAM_SIZE
 
 #define CONFIG_SYS_INIT_SP_OFFSET \
 	(CONFIG_SYS_INIT_RAM_SIZE - GENERATED_GBL_DATA_SIZE)
@@ -144,12 +144,19 @@
 
 /* FLASH and environment organization */
 #define CONFIG_SYS_NO_FLASH
-#define CONFIG_ENV_IS_IN_MMC
 
 #if defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_ENV_SIZE						(SZ_8K)
-#define CONFIG_ENV_OFFSET					(8 * SZ_64K)
-#define CONFIG_SYS_MMC_ENV_DEV				0	/* SDHC3 */
+#define CONFIG_ENV_SIZE                     (SZ_8K)
+#define CONFIG_ENV_OFFSET                   (8 * SZ_64K)
+#define CONFIG_SYS_MMC_ENV_DEV              0 /* SDHC3 */
+#elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
+#define CONFIG_ENV_SIZE                     (SZ_8K)
+#define CONFIG_ENV_OFFSET                   (8 * SZ_64K)
+#define CONFIG_ENV_SECT_SIZE                CONFIG_ENV_SIZE
+#define CONFIG_ENV_SPI_BUS                  CONFIG_SF_DEFAULT_BUS
+#define CONFIG_ENV_SPI_CS                   CONFIG_SF_DEFAULT_CS
+#define CONFIG_ENV_SPI_MAX_HZ               CONFIG_SF_DEFAULT_SPEED
+#define CONFIG_ENV_SPI_MODE                 CONFIG_SF_DEFAULT_MODE
 #endif
 
 /* Command definition */
@@ -171,7 +178,7 @@
 #define CONFIG_CMD_I2C
 #define CONFIG_SYS_I2C
 #define CONFIG_SYS_I2C_MXC
-#define CONFIG_SYS_I2C_SPEED				100000
+#define CONFIG_SYS_I2C_SPEED                100000
 
 /* Framebuffer */
 #if 0
@@ -199,7 +206,7 @@
 #define CONFIG_PCI_PNP
 #define CONFIG_PCI_SCAN_SHOW
 #define CONFIG_PCIE_IMX
-#define CONFIG_PCIE_IMX_PERST_GPIO			IMX_GPIO_NR(5, 2)
+#define CONFIG_PCIE_IMX_PERST_GPIO          IMX_GPIO_NR(5, 2)
 #endif
 
 /* Fuse Configs */
@@ -209,20 +216,20 @@
 #endif
 
 /* Env settings */
-#define CONFIG_ENV_CONSOLE_DEV			"ttymxc0"
-#define CONFIG_ENV_MMCROOT				"/dev/mmcblk2p2"
-#define CONFIG_ENV_DEFAULT_UBT_FILE		"u-boot-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX ".imx"
-#define CONFIG_ENV_DEFAULT_IMG_FILE		"zImage-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX
-#define CONFIG_ENV_DEFAULT_FDT_FILE		          CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX ".dtb"
-#define CONFIG_ENV_DEFAULT_SCR_FILE		"boot-"   CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX ".scr"
-#define CONFIG_ENV_DEFAULT_ETH_ADDR		"00:0D:15:00:D1:75"
-#define CONFIG_ENV_DEFAULT_CLIENT_IP	"192.168.0.150"
-#define CONFIG_ENV_DEFAULT_SERVER_IP	"192.168.0.1"
-#define CONFIG_ENV_DEFAULT_NETMASK		"255.255.255.0"
-#define CONFIG_ENV_DEFAULT_TFTP_DIR     "imx6"
+#define CONFIG_ENV_CONSOLE_DEV              "ttymxc0"
+#define CONFIG_ENV_MMCROOT                  "/dev/mmcblk2p2"
+#define CONFIG_ENV_DEFAULT_UBT_FILE         "u-boot-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX ".imx"
+#define CONFIG_ENV_DEFAULT_IMG_FILE         "zImage-" CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX
+#define CONFIG_ENV_DEFAULT_FDT_FILE                   CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX ".dtb"
+#define CONFIG_ENV_DEFAULT_SCR_FILE         "boot-"   CONFIG_TINY_DEFAULT_ARCH_PREFIX "-tinyrex" CONFIG_TINY_DEFAULT_ARCH_POSTFIX ".scr"
+#define CONFIG_ENV_DEFAULT_ETH_ADDR         "00:0D:15:00:D1:75"
+#define CONFIG_ENV_DEFAULT_CLIENT_IP        "192.168.0.150"
+#define CONFIG_ENV_DEFAULT_SERVER_IP        "192.168.0.1"
+#define CONFIG_ENV_DEFAULT_NETMASK          "255.255.255.0"
+#define CONFIG_ENV_DEFAULT_TFTP_DIR         "imx6"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-        "tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
+	"tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
 	"uboot="    CONFIG_ENV_DEFAULT_UBT_FILE "\0" \
 	"image="    "zImage" "\0" \
 	"fdt_file=" CONFIG_ENV_DEFAULT_FDT_FILE "\0" \

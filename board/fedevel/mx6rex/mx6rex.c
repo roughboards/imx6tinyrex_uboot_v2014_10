@@ -347,7 +347,7 @@ int board_eth_init(bd_t *bis)
 {
         setup_iomux_enet();
 
-	setup_pcie();
+        setup_pcie();
 
         return cpu_eth_init(bis);
 }
@@ -411,6 +411,6 @@ int board_late_init(void)
 
 int checkboard(void)
 {
-        puts("Board: MX6 Rex\n");
+        puts("Board: MX6 Rex - " CONFIG_MODULE_TYPE_POSTFIX "\n");
         return 0;
 }
