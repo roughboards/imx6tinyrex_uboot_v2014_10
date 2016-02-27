@@ -352,12 +352,28 @@ int board_eth_init(bd_t *bis)
         return cpu_eth_init(bis);
 }
 
+void clear_pcie_on_wdog_reset(void)
+{
+        u32 cause;
+        struct src *const src_regs = (struct src *)SRC_BASE_ADDR;
+        struct iomuxc *const iomuxc_regs = (struct iomuxc *)IOMUXC_BASE_ADDR;
+
+        cause = readl(&src_regs->srsr);
+        if (cause == 0x00010)
+        {
+                clrbits_le32(&iomuxc_regs->gpr[1], IOMUXC_GPR1_REF_SSP_EN);
+                clrbits_le32(&iomuxc_regs->gpr[12], IOMUXC_GPR12_APPS_LTSSM_ENABLE);
+        }
+}
+
 int board_early_init_f(void)
 {
         setup_iomux_uart();
 #if defined(CONFIG_VIDEO_IPUV3)
         setup_display();
 #endif
+
+        clear_pcie_on_wdog_reset();
 
         return 0;
 }
