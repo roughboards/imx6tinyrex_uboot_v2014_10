@@ -131,6 +131,21 @@ static void setup_iomux_enet(void)
 	imx_iomux_v3_setup_multiple_pads(enet_pads2, ARRAY_SIZE(enet_pads2));
 }
 
+iomux_v3_cfg_t const usdhc2_pads[] = {
+        MX6_PAD_SD2_CLK__SD2_CLK     | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_SD2_CMD__SD2_CMD     | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_SD2_DAT0__SD2_DATA0  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_SD2_DAT1__SD2_DATA1  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_SD2_DAT2__SD2_DATA2  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_SD2_DAT3__SD2_DATA3  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_NANDF_D4__SD2_DATA4  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_NANDF_D5__SD2_DATA5  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_NANDF_D6__SD2_DATA6  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_NANDF_D7__SD2_DATA7  | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+        MX6_PAD_NANDF_D2__GPIO2_IO02 | MUX_PAD_CTRL(NO_PAD_CTRL), /* CD */
+        MX6_PAD_NANDF_D3__GPIO2_IO03 | MUX_PAD_CTRL(NO_PAD_CTRL), /* WP */
+};
+
 iomux_v3_cfg_t const usdhc3_pads[] = {
         MX6_PAD_SD3_CLK__SD3_CLK     | MUX_PAD_CTRL(USDHC_PAD_CTRL),
         MX6_PAD_SD3_CMD__SD3_CMD     | MUX_PAD_CTRL(USDHC_PAD_CTRL),
@@ -141,11 +156,17 @@ iomux_v3_cfg_t const usdhc3_pads[] = {
         MX6_PAD_NANDF_D0__GPIO2_IO00 | MUX_PAD_CTRL(NO_PAD_CTRL), /* CD */
 };
 
+iomux_v3_cfg_t const ecspi2_pads[] = {
+        MX6_PAD_DISP0_DAT19__ECSPI2_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
+        MX6_PAD_DISP0_DAT17__ECSPI2_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
+        MX6_PAD_DISP0_DAT16__ECSPI2_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
+        MX6_PAD_DISP0_DAT18__GPIO5_IO12  | MUX_PAD_CTRL(NO_PAD_CTRL), /* CS0 */
+};
+
 iomux_v3_cfg_t const ecspi3_pads[] = {
         MX6_PAD_DISP0_DAT0__ECSPI3_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
         MX6_PAD_DISP0_DAT1__ECSPI3_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
         MX6_PAD_DISP0_DAT2__ECSPI3_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
-//        MX6_PAD_DISP0_DAT5__ECSPI3_SS2  | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS2 */
         MX6_PAD_DISP0_DAT5__GPIO4_IO26  | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS2 */
 };
 
@@ -153,6 +174,45 @@ static void setup_spi(void)
 {
         imx_iomux_v3_setup_multiple_pads(ecspi3_pads, ARRAY_SIZE(ecspi3_pads));
 }
+
+static struct i2c_pads_info i2c0_pad_info = {
+        .scl = {
+                .i2c_mode  = MX6_PAD_CSI0_DAT9__I2C1_SCL   | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gpio_mode = MX6_PAD_CSI0_DAT9__GPIO5_IO27 | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gp        = IMX_GPIO_NR(5, 27)
+        },
+        .sda = {
+                .i2c_mode  = MX6_PAD_CSI0_DAT8__I2C1_SDA   | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gpio_mode = MX6_PAD_CSI0_DAT8__GPIO5_IO26 | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gp        = IMX_GPIO_NR(5, 26)
+        }
+};
+
+static struct i2c_pads_info i2c1_pad_info = {
+        .scl = {
+                .i2c_mode  = MX6_PAD_KEY_COL3__I2C2_SCL   | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gpio_mode = MX6_PAD_KEY_COL3__GPIO4_IO12 | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gp        = IMX_GPIO_NR(4, 12)
+        },
+        .sda = {
+                .i2c_mode  = MX6_PAD_KEY_ROW3__I2C2_SDA   | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gpio_mode = MX6_PAD_KEY_ROW3__GPIO4_IO13 | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gp        = IMX_GPIO_NR(4, 13)
+        }
+};
+
+static struct i2c_pads_info i2c2_pad_info = {
+        .scl = {
+                .i2c_mode  = MX6_PAD_EIM_D17__I2C3_SCL   | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gpio_mode = MX6_PAD_EIM_D17__GPIO3_IO17 | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gp        = IMX_GPIO_NR(3, 17)
+        },
+        .sda = {
+                .i2c_mode  = MX6_PAD_EIM_D18__I2C3_SDA   | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gpio_mode = MX6_PAD_EIM_D18__GPIO3_IO18 | MUX_PAD_CTRL(I2C_PAD_CTRL),
+                .gp        = IMX_GPIO_NR(3, 18)
+        }
+};
 
 iomux_v3_cfg_t const pcie_pads[] = {
         MX6_PAD_CSI0_DATA_EN__GPIO5_IO20 | MUX_PAD_CTRL(USDHC_PAD_CTRL), /* WAKE */
@@ -172,6 +232,7 @@ static void setup_iomux_uart(void)
 #ifdef CONFIG_FSL_ESDHC
 struct fsl_esdhc_cfg usdhc_cfg[CONFIG_SYS_FSL_USDHC_NUM];
 
+#define GPIO_USDHC2_CD     IMX_GPIO_NR(2, 2)
 #define GPIO_USDHC3_CD     IMX_GPIO_NR(2, 0)
 
 int board_mmc_getcd(struct mmc *mmc)
@@ -180,6 +241,9 @@ int board_mmc_getcd(struct mmc *mmc)
         int ret = 0;
 
         switch (cfg->esdhc_base) {
+        case USDHC2_BASE_ADDR:
+                ret = !gpio_get_value(GPIO_USDHC2_CD);
+                break;
         case USDHC3_BASE_ADDR:
                 ret = !gpio_get_value(GPIO_USDHC3_CD);
                 break;
@@ -197,6 +261,7 @@ int board_mmc_init(bd_t *bis)
          * According to the board_mmc_init() the following map is done:
          * (U-boot device node)    (Physical Port)
          * mmc0                    SD3 Primary
+         * mmc1                    SD2
          */
         for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
                 switch (i) {
@@ -207,6 +272,14 @@ int board_mmc_init(bd_t *bis)
                         usdhc_cfg[0].esdhc_base    = USDHC3_BASE_ADDR;
                         usdhc_cfg[0].sdhc_clk      = mxc_get_clock(MXC_ESDHC3_CLK);
                         usdhc_cfg[0].max_bus_width = 4;
+                        break;
+                case 1:
+                        imx_iomux_v3_setup_multiple_pads(
+                                usdhc2_pads, ARRAY_SIZE(usdhc2_pads));
+                        gpio_direction_input(GPIO_USDHC2_CD);
+                        usdhc_cfg[1].esdhc_base    = USDHC2_BASE_ADDR;
+                        usdhc_cfg[1].sdhc_clk      = mxc_get_clock(MXC_ESDHC2_CLK);
+                        usdhc_cfg[1].max_bus_width = 8;
                         break;
                 default:
                         printf("Warning: you configured more USDHC controllers"
@@ -386,6 +459,9 @@ int board_init(void)
 #ifdef CONFIG_MXC_SPI
         setup_spi();
 #endif
+        setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c0_pad_info);
+        setup_i2c(1, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c1_pad_info);
+        setup_i2c(2, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c2_pad_info);
 
 #if defined(CONFIG_CMD_SATA) && defined(CONFIG_MX6Q)
         setup_sata();
@@ -396,12 +472,14 @@ int board_init(void)
 
 #ifdef CONFIG_MXC_SPI
 
+#define GPIO_ECSPI2_CS0     IMX_GPIO_NR(5, 12)
 #define GPIO_ECSPI3_CS2     IMX_GPIO_NR(4, 26)
 
 int board_spi_cs_gpio(unsigned bus, unsigned cs)
 {
         int ret = -1;
 
+        if (bus == 1 && cs == 0) ret = GPIO_ECSPI2_CS0;
         if (bus == 2 && cs == 2) ret = GPIO_ECSPI3_CS2;
 
         return ret;
@@ -412,6 +490,7 @@ int board_spi_cs_gpio(unsigned bus, unsigned cs)
 static const struct boot_mode board_boot_modes[] = {
         /* 4 bit bus width */
         {"mmc0", MAKE_CFGVAL(0x40, 0x30, 0x00, 0x00)}, // SD3
+        {"mmc1", MAKE_CFGVAL(0x40, 0x28, 0x00, 0x00)}, // SD2
         {NULL,	 0},
 };
 #endif

@@ -524,7 +524,6 @@ int board_spi_cs_gpio(unsigned bus, unsigned cs)
 static const struct boot_mode board_boot_modes[] = {
         /* 4 bit bus width */
         {"mmc0", MAKE_CFGVAL(0x40, 0x30, 0x00, 0x00)}, // SD3
-        /* 8 bit bus width */
         {"mmc1", MAKE_CFGVAL(0x40, 0x20, 0x00, 0x00)}, // SD1
         {"mmc2", MAKE_CFGVAL(0x40, 0x38, 0x00, 0x00)}, // SD4
         {NULL,	 0},

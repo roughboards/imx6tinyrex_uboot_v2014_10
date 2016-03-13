@@ -59,7 +59,7 @@
 /* MMC Configs */
 #define CONFIG_FSL_ESDHC
 #define CONFIG_FSL_USDHC
-#define CONFIG_SYS_FSL_ESDHC_ADDR           USDHC2_BASE_ADDR
+#define CONFIG_SYS_FSL_ESDHC_ADDR           USDHC3_BASE_ADDR
 
 #define CONFIG_MMC
 #define CONFIG_CMD_MMC
@@ -71,7 +71,7 @@
 #define CONFIG_CMD_EXT4
 #define CONFIG_CMD_EXT4_WRITE
 #define CONFIG_DOS_PARTITION
-#define CONFIG_SYS_FSL_USDHC_NUM            1
+#define CONFIG_SYS_FSL_USDHC_NUM            2
 
 /* SPI Configs */
 #define CONFIG_CMD_SF
@@ -119,8 +119,8 @@
 #define CONFIG_SYS_MAXARGS                  16
 #define CONFIG_SYS_BARGSIZE                 CONFIG_SYS_CBSIZE
 
-#define CONFIG_SYS_MEMTEST_START            0x80000000
-#define CONFIG_SYS_MEMTEST_END              (CONFIG_SYS_MEMTEST_START + SZ_512M)
+#define CONFIG_SYS_MEMTEST_START            (MMDC0_ARB_BASE_ADDR)
+#define CONFIG_SYS_MEMTEST_END              (CONFIG_SYS_MEMTEST_START + SZ_1M)
 #define CONFIG_SYS_MEMTEST_SCRATCH          CONFIG_LOADADDR
 
 #define CONFIG_SYS_LOAD_ADDR                CONFIG_LOADADDR
@@ -227,6 +227,11 @@
 #define CONFIG_ENV_DEFAULT_SERVER_IP        "192.168.0.1"
 #define CONFIG_ENV_DEFAULT_NETMASK          "255.255.255.0"
 #define CONFIG_ENV_DEFAULT_TFTP_DIR         "imx6"
+#ifdef CONFIG_SYS_MMC_ENV_DEV
+#define CONFIG_ENV_MMC_ENV_DEV              __stringify(CONFIG_SYS_MMC_ENV_DEV)
+#else
+#define CONFIG_ENV_MMC_ENV_DEV              __stringify(0)
+#endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"tftp_dir=" CONFIG_ENV_DEFAULT_TFTP_DIR "\0" \
@@ -239,7 +244,7 @@
 	"console=" CONFIG_ENV_CONSOLE_DEV "\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
-	"mmcdev=0\0" \
+	"mmcdev=" CONFIG_ENV_MMC_ENV_DEV "\0" \
 	"mmcpart=1\0" \
 	"mmcroot=" CONFIG_ENV_MMCROOT " rootwait rw\0" \
 	"spidev=" __stringify(CONFIG_ENV_SPI_BUS) "\0" \
