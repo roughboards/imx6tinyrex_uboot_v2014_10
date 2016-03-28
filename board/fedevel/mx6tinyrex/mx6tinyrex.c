@@ -26,6 +26,8 @@
 #include <asm/io.h>
 #include <asm/arch/sys_proto.h>
 #include <i2c.h>
+#include "com32h3n74ulc_lcd.h"
+
 DECLARE_GLOBAL_DATA_PTR;
 
 #define UART_PAD_CTRL  (PAD_CTL_PUS_100K_UP |                     \
@@ -530,11 +532,18 @@ static const struct boot_mode board_boot_modes[] = {
 };
 #endif
 
+#define GPIO_LCD_RSTB    IMX_GPIO_NR(2, 11)
+
 int board_late_init(void)
 {
 #ifdef CONFIG_CMD_BMODE
         add_board_boot_modes(board_boot_modes);
 #endif
+// add lcd spi init sequence
+#ifdef CONFIG_MXC_SPI
+	com32h3n74ulc_init(GPIO_LCD_RSTB, 1, 0);
+#endif
+
 
         return 0;
 }

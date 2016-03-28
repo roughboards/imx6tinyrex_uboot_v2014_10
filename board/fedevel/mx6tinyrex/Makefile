@@ -5,3 +5,4 @@
 #
 
 obj-y  := mx6tinyrex.o
+obj-$(CONFIG_MXC_SPI_DISPLAY) += com32h3n74ulc_lcd.o
