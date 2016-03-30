@@ -6,27 +6,35 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
+
+#include <common.h>
+#include <asm/io.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/imx-regs.h>
 #include <asm/arch/iomux.h>
+#include <asm/arch/sys_proto.h>
+#include <malloc.h>
 #include <asm/arch/mx6-pins.h>
 #include <asm/errno.h>
 #include <asm/gpio.h>
-#include <asm/imx-common/mxc_i2c.h>
-#include <asm/imx-common/iomux-v3.h>
 #include <asm/imx-common/boot_mode.h>
-#include <asm/imx-common/video.h>
 #include <asm/imx-common/fbpanel.h>
+#include <asm/imx-common/iomux-v3.h>
+#include <asm/imx-common/mxc_i2c.h>
+#include <asm/imx-common/sata.h>
+#include <asm/imx-common/spi.h>
 #include <mmc.h>
 #include <fsl_esdhc.h>
+#include <micrel.h>
 #include <miiphy.h>
 #include <netdev.h>
-#include <micrel.h>
-#include <asm/arch/mxc_hdmi.h>
 #include <asm/arch/crm_regs.h>
-#include <asm/io.h>
-#include <asm/arch/sys_proto.h>
+#include <asm/arch/mxc_hdmi.h>
 #include <i2c.h>
+#include <input.h>
+#include <netdev.h>
+#include <splash.h>
+
 #include "com32h3n74ulc_lcd.h"
 
 DECLARE_GLOBAL_DATA_PTR;
