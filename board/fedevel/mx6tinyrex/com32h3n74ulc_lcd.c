@@ -178,10 +178,10 @@ static int do_lcdinv(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	reg = simple_strtoul(argv[1], NULL, 16);
 	if (reg == 1) {
 		ret = com32h3n74ulc_spi_transfer(spi, &disp_inv_on);
-		printf("lcdinv: on");
+		printf("lcdinv: on\n");
 	} else {
 		ret = com32h3n74ulc_spi_transfer(spi, &disp_inv_off);
-		printf("lcdinv: off");
+		printf("lcdinv: off\n");
 	}
 
 	spi_release_bus(spi);
@@ -192,8 +192,8 @@ free_bus:
 }
 
 U_BOOT_CMD(
-	lcdinv, 70, 0, do_lcdinv,
-	"read spi display register",
-	"reg16"
+	lcd_inv, 70, 0, do_lcdinv,
+	"invert lcd display",
+	"[0|1]"
 );
 
