@@ -73,6 +73,8 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define RGB_PAD_CTRL	PAD_CTL_DSE_120ohm
 
+#define GPIO_LCD_RSTB    IMX_GPIO_NR(2, 11)
+
 #ifdef CONFIG_CMD_FBPANEL
 static const iomux_v3_cfg_t rgb_pads[] = {
 	IOMUX_PAD_CTRL(EIM_A16__IPU1_DI1_DISP_CLK, RGB_PAD_CTRL),
@@ -584,8 +586,6 @@ static const struct boot_mode board_boot_modes[] = {
         {NULL,	 0},
 };
 #endif
-
-#define GPIO_LCD_RSTB    IMX_GPIO_NR(2, 11)
 
 int board_late_init(void)
 {
