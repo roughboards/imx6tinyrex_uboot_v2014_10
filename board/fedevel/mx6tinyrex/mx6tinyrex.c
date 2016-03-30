@@ -283,6 +283,8 @@ static void setup_spi(void)
 {
         imx_iomux_v3_setup_multiple_pads(ecspi1_pads, ARRAY_SIZE(ecspi1_pads));
         imx_iomux_v3_setup_multiple_pads(ecspi2_pads, ARRAY_SIZE(ecspi2_pads));
+        enable_spi_clk(true, 0);
+        enable_spi_clk(true, 1);
 }
 
 static struct i2c_pads_info i2c0_pad_info = {
