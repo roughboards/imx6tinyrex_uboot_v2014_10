@@ -450,7 +450,7 @@ int board_phy_config(struct phy_device *phydev)
 #ifdef CONFIG_CMD_FBPANEL
 void board_enable_lvds(const struct display_info_t *di, int enable)
 {
-	gpio_direction_output(GP_BACKLIGHT_LVDS, enable);
+//	gpio_direction_output(GP_BACKLIGHT_LVDS, enable);
 }
 
 void board_enable_lcd(const struct display_info_t *di, int enable)
