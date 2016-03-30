@@ -16,6 +16,7 @@
 #include <asm/imx-common/iomux-v3.h>
 #include <asm/imx-common/boot_mode.h>
 #include <asm/imx-common/video.h>
+#include <asm/imx-common/fbpanel.h>
 #include <mmc.h>
 #include <fsl_esdhc.h>
 #include <miiphy.h>
@@ -108,6 +109,10 @@ iomux_v3_cfg_t const enet_pads2[] = {
 #define GPIO_ENET_CFG_MODE3     IMX_GPIO_NR(6, 29)
 #define GPIO_ENET_CFG_CLK125_EN IMX_GPIO_NR(6, 24)
 
+#define GPIO_ECSPI1_CS0     IMX_GPIO_NR(2, 30)
+#define GPIO_ECSPI2_CS0     IMX_GPIO_NR(2, 26)
+#define GPIO_ECSPI2_CS1     IMX_GPIO_NR(5, 9)
+
 static void setup_iomux_enet(void)
 {
         imx_iomux_v3_setup_multiple_pads(enet_pads1, ARRAY_SIZE(enet_pads1));
@@ -178,15 +183,15 @@ iomux_v3_cfg_t const ecspi1_pads[] = {
         MX6_PAD_EIM_D16__ECSPI1_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
         MX6_PAD_EIM_D17__ECSPI1_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
         MX6_PAD_EIM_D18__ECSPI1_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
-        MX6_PAD_EIM_EB2__GPIO2_IO30  | MUX_PAD_CTRL(NO_PAD_CTRL), /* CS0 */
+        MX6_PAD_EIM_EB2__GPIO2_IO30  | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS0 */
 };
 
 iomux_v3_cfg_t const ecspi2_pads[] = {
         MX6_PAD_EIM_CS0__ECSPI2_SCLK    | MUX_PAD_CTRL(SPI_PAD_CTRL),
         MX6_PAD_EIM_OE__ECSPI2_MISO     | MUX_PAD_CTRL(SPI_PAD_CTRL),
         MX6_PAD_EIM_CS1__ECSPI2_MOSI    | MUX_PAD_CTRL(SPI_PAD_CTRL),
-        MX6_PAD_EIM_RW__GPIO2_IO26      | MUX_PAD_CTRL(NO_PAD_CTRL), /* CS0 */
-        MX6_PAD_DISP0_DAT15__GPIO5_IO09 | MUX_PAD_CTRL(NO_PAD_CTRL), /* CS1 */
+        MX6_PAD_EIM_RW__GPIO2_IO26      | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS0 */
+        MX6_PAD_DISP0_DAT15__GPIO5_IO09 | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS1 */
 };
 
 static void setup_spi(void)
@@ -356,90 +361,58 @@ int board_phy_config(struct phy_device *phydev)
         return 0;
 }
 
-#if defined(CONFIG_VIDEO_IPUV3)
-static void enable_hdmi(struct display_info_t const *dev)
+
+#ifdef CONFIG_CMD_FBPANEL
+void board_enable_lvds(const struct display_info_t *di, int enable)
 {
-        imx_enable_hdmi_phy();
+	gpio_direction_output(GP_BACKLIGHT_LVDS, enable);
 }
 
-struct display_info_t const displays[] = {
-        {
-                .bus	= -1,
-                .addr	= 0,
-                .pixfmt	= IPU_PIX_FMT_RGB24,
-                .detect	= detect_hdmi,
-                .enable	= enable_hdmi,
-                .mode	= {
-                        .name           = "HDMI",
-                        .refresh        = 60,
-                        .xres           = 1024,
-                        .yres           = 768,
-                        .pixclock       = 15385,
-                        .left_margin    = 220,
-                        .right_margin   = 40,
-                        .upper_margin   = 21,
-                        .lower_margin   = 7,
-                        .hsync_len      = 60,
-                        .vsync_len      = 10,
-                        .sync           = FB_SYNC_EXT,
-                        .vmode          = FB_VMODE_NONINTERLACED
-                }
-        }
+void board_enable_lcd(const struct display_info_t *di, int enable)
+{
+	if (enable) {
+		SETUP_IOMUX_PADS(rgb_pads);
+		com32h3n74ulc_init(GPIO_LCD_RSTB, 1, 0);
+		mdelay(100); /* let panel sync up before enabling backlight */
+		// TODO enable backlight here
+		
+	} else {
+		// TODO disable backlight here
+		
+		SETUP_IOMUX_PADS(rgb_gpio_pads);
+	}
+}
+#define IMX_VD_SPI_QVGA(_mode, _detect, _bus) \
+{\
+	.bus	= _bus,\
+	.addr	= 0x70,\
+	.pixfmt	= IPU_PIX_FMT_RGB24,\
+	.detect	= NULL,\
+	.enable	= board_enable_lcd,\
+	.fbtype = FB_##_mode,\
+	.fbflags = FBF_MODESTR | FBF_SPI,\
+	.mode	= {\
+		.name           = "qvga",\
+		.refresh        = 75,\
+		.xres           = 800,\
+		.yres           = 480,\
+		.pixclock       = 30720,\
+		.left_margin    = 16,\
+		.right_margin   = 20,\
+		.upper_margin   = 16,\
+		.lower_margin   = 4,\
+		.hsync_len      = 52,\
+		.vsync_len      = 2,\
+		.sync           = 0,\
+		.vmode          = FB_VMODE_NONINTERLACED\
+	}\
+}
+
+static const struct display_info_t displays[] = {
+	IMX_VD_SPI_QVGA(LCD, 1, 1),
 };
-size_t display_count = ARRAY_SIZE(displays);
 
-static void setup_display(void)
-{
-        struct mxc_ccm_reg *mxc_ccm = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
-        struct iomuxc *iomux = (struct iomuxc *)IOMUXC_BASE_ADDR;
-        int reg;
-
-        enable_ipu_clock();
-        imx_setup_hdmi();
-
-        /* Turn on LDB0, LDB1, IPU,IPU DI0 clocks */
-        reg = readl(&mxc_ccm->CCGR3);
-        reg |=  MXC_CCM_CCGR3_LDB_DI0_MASK | MXC_CCM_CCGR3_LDB_DI1_MASK;
-        writel(reg, &mxc_ccm->CCGR3);
-
-        /* set LDB0, LDB1 clk select to 011/011 */
-        reg = readl(&mxc_ccm->cs2cdr);
-        reg &= ~(MXC_CCM_CS2CDR_LDB_DI0_CLK_SEL_MASK
-                 | MXC_CCM_CS2CDR_LDB_DI1_CLK_SEL_MASK);
-        reg |= (3 << MXC_CCM_CS2CDR_LDB_DI0_CLK_SEL_OFFSET)
-               | (3 << MXC_CCM_CS2CDR_LDB_DI1_CLK_SEL_OFFSET);
-        writel(reg, &mxc_ccm->cs2cdr);
-
-        reg = readl(&mxc_ccm->cscmr2);
-        reg |= MXC_CCM_CSCMR2_LDB_DI0_IPU_DIV | MXC_CCM_CSCMR2_LDB_DI1_IPU_DIV;
-        writel(reg, &mxc_ccm->cscmr2);
-
-        reg = readl(&mxc_ccm->chsccdr);
-        reg |= (CHSCCDR_CLK_SEL_LDB_DI0
-                << MXC_CCM_CHSCCDR_IPU1_DI0_CLK_SEL_OFFSET);
-        reg |= (CHSCCDR_CLK_SEL_LDB_DI0
-                << MXC_CCM_CHSCCDR_IPU1_DI1_CLK_SEL_OFFSET);
-        writel(reg, &mxc_ccm->chsccdr);
-
-        reg = IOMUXC_GPR2_BGREF_RRMODE_EXTERNAL_RES
-             | IOMUXC_GPR2_DI1_VS_POLARITY_ACTIVE_LOW
-             | IOMUXC_GPR2_DI0_VS_POLARITY_ACTIVE_LOW
-             | IOMUXC_GPR2_BIT_MAPPING_CH1_SPWG
-             | IOMUXC_GPR2_DATA_WIDTH_CH1_18BIT
-             | IOMUXC_GPR2_BIT_MAPPING_CH0_SPWG
-             | IOMUXC_GPR2_DATA_WIDTH_CH0_18BIT
-             | IOMUXC_GPR2_LVDS_CH0_MODE_DISABLED
-             | IOMUXC_GPR2_LVDS_CH1_MODE_ENABLED_DI0;
-        writel(reg, &iomux->gpr[2]);
-
-        reg = readl(&iomux->gpr[3]);
-        reg = (reg & ~(IOMUXC_GPR3_LVDS1_MUX_CTL_MASK
-                       | IOMUXC_GPR3_HDMI_MUX_CTL_MASK))
-               | (IOMUXC_GPR3_MUX_SRC_IPU1_DI0
-               << IOMUXC_GPR3_LVDS1_MUX_CTL_OFFSET);
-        writel(reg, &iomux->gpr[3]);
-}
-#endif /* CONFIG_VIDEO_IPUV3 */
+#endif /* CONFIG_CMD_FBPANEL */
 
 /*
  * Do not overwrite the console
@@ -476,9 +449,6 @@ void clear_pcie_on_wdog_reset(void)
 int board_early_init_f(void)
 {
         setup_iomux_uart();
-#if defined(CONFIG_VIDEO_IPUV3)
-        setup_display();
-#endif
 
         clear_pcie_on_wdog_reset();
 
@@ -490,9 +460,12 @@ int board_init(void)
         /* address of boot parameters */
         gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
-#ifdef CONFIG_MXC_SPI
         setup_spi();
+
+#ifdef CONFIG_CMD_FBPANEL
+	fbp_setup_display(displays, ARRAY_SIZE(displays));
 #endif
+
         setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c0_pad_info);
         setup_i2c(1, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c1_pad_info);
         setup_i2c(2, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c2_pad_info);
@@ -506,9 +479,6 @@ int board_init(void)
 
 #ifdef CONFIG_MXC_SPI
 
-#define GPIO_ECSPI1_CS0     IMX_GPIO_NR(2, 30)
-#define GPIO_ECSPI2_CS0     IMX_GPIO_NR(2, 26)
-#define GPIO_ECSPI2_CS1     IMX_GPIO_NR(5, 9)
 
 int board_spi_cs_gpio(unsigned bus, unsigned cs)
 {
@@ -541,7 +511,7 @@ int board_late_init(void)
 #endif
 // add lcd spi init sequence
 #ifdef CONFIG_MXC_SPI
-	com32h3n74ulc_init(GPIO_LCD_RSTB, 1, 0);
+	
 #endif
 
 

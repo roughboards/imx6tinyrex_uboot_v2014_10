@@ -6,78 +6,76 @@
  */
 
 #include <common.h>
+#include <asm/io.h>
+#include <asm/arch/clock.h>
+#include <asm/arch/mx6-pins.h>
 #include <asm/gpio.h>
+#include <asm/imx-common/iomux-v3.h>
+#include <asm/imx-common/spi.h>
+#include <asm/imx-common/video.h>
 #include <spi.h>
 
-struct com32h3n74ulc_seq_entry {
+#include "com32h3n74ulc_lcd.h"
+
+#define GPIO_ECSPI2_CS0     IMX_GPIO_NR(2, 26)
+
+struct com32h3n74ulc_cmd {
 	u16 cmd;
 	u16 *params;
 	int params_len;
+};
+
+struct com32h3n74ulc_seq_entry {
+	struct com32h3n74ulc_cmd cmd;
 	int delay_ms;
 };
 
 /* com32h3n74ulc model commands parameters */
 // from datasheet power on sequence
-static struct com32h3n74ulc_seq_entry en_extended_cmd = {
-	0xb9, {0xff, 0x83, 0x63}, 3, 0};
-static struct com32h3n74ulc_seq_entry set_power_1_cmd = {
-	0xb1, {0x81, 0x24, 0x04, 0x02, 0x02, 0x03, 0x10, 0x10, 0x34, 0x3C, 0x3F, 0x3F}, 12, 0};
-static struct com32h3n74ulc_seq_entry sleep_out_cmd = {
-	0x11, NULL, 0, 6};
-static struct com32h3n74ulc_seq_entry disp_inv_off = {
-	0x20, NULL, 0, 0};
-static struct com32h3n74ulc_seq_entry mem_acc_ctrl_cmd = {
-	0x36, {0x00}, 1, 0};
-static struct com32h3n74ulc_seq_entry interface_px_cmd = {
-	0x3A, {0x70}, 1, 120};
-static struct com32h3n74ulc_seq_entry set_power_2_cmd = {
-	0xb1, {0x78, 0x24, 0x04, 0x02, 0x02, 0x03, 0x10, 0x10, 0x34, 0x3C, 0x3F, 0x3F}, 12, 0};
-static struct com32h3n74ulc_seq_entry set_rgb_interface_reg_cmd = {
-	0xB3, {0x01}, 1, 0};
-static struct com32h3n74ulc_seq_entry set_disp_wav_cycle_cmd = {
-	0xB4, {0x00, 0x08, 0x56, 0x07, 0x01, 0x01, 0x4D, 0x01, 0x42}, 9, 0}; 
-static struct com32h3n74ulc_seq_entry set_panel_cmd = {
-	0xCC, {0x0B}, 1, 0};
-static struct com32h3n74ulc_seq_entry set_gamma_curve_cmd = {
-	0xE0,{0x01, 0x48, 0x4D, 0x4E, 0x58, 0xF6, 0x0B, 0x4E, 0x12, 0xD5, 
+static u16 en_extended_cmd_params[] = {0xff, 0x83, 0x63};
+static u16 set_power_1_cmd_params[] = {0x81, 0x24, 0x04, 0x02, 0x02, 0x03, 0x10, 0x10, 0x34, 0x3C, 0x3F, 0x3F};
+static u16 mem_acc_ctrl_cmd_params[] = {0x00};
+static u16 interface_px_cmd_params[] = {0x70};
+static u16 set_power_2_cmd_params[] = {0x78, 0x24, 0x04, 0x02, 0x02, 0x03, 0x10, 0x10, 0x34, 0x3C, 0x3F, 0x3F};
+static u16 set_rgb_interface_reg_cmd_params[] = {0x01};
+static u16 set_disp_wav_cycle_cmd_params[] = {0x00, 0x08, 0x56, 0x07, 0x01, 0x01, 0x4D, 0x01, 0x42};
+static u16 set_panel_cmd_params[] = {0x0B};
+static u16 set_gamma_curve_cmd_params[] = {0x01, 0x48, 0x4D, 0x4E, 0x58, 0xF6, 0x0B, 0x4E, 0x12, 0xD5, 
 		0x15, 0x95, 0x55, 0x8E, 0x11, 0x01, 0x48, 0x4D, 0x55, 0x5F, 
-		0xFD, 0x0A, 0x4E, 0x51, 0xD3, 0x17, 0x95, 0x96, 0x4E, 0x11}, 5};
-static struct com32h3n74ulc_seq_entry disp_on_cmd = {
-	0x29, NULL, 0, 0};
+		0xFD, 0x0A, 0x4E, 0x51, 0xD3, 0x17, 0x95, 0x96, 0x4E, 0x11};
+
+
+/*static struct com32h3n74ulc_cmd sleep_out_cmd = {
+	0x11, NULL, 0};
+static struct com32h3n74ulc_cmd disp_on_cmd = {
+	0x29, NULL, 0};
+*/
+
+static struct com32h3n74ulc_cmd disp_inv_off = {
+	0x20, NULL, 0};
+static struct com32h3n74ulc_cmd disp_inv_on = {
+	0x21, NULL, 0};
 
 /* com32h3n74ulc init sequence */
 static struct com32h3n74ulc_seq_entry com32h3n74ulc_initseq[] = {
-	en_extended_cmd,
-	set_power_1_cmd,
-	sleep_out_cmd,
-	disp_inv_off,
-	mem_acc_ctrl_cmd,
-	interface_px_cmd,
-	set_power_2_cmd,
-	set_rgb_interface_reg_cmd,
-	set_disp_wav_cycle_cmd,
-	set_panel_cmd,
-	set_gamma_curve_cmd,
-	disp_on_cmd,
+	{{0xb9, en_extended_cmd_params, ARRAY_SIZE(en_extended_cmd_params)}, 0},
+	{{0xb1, set_power_1_cmd_params, ARRAY_SIZE(set_power_1_cmd_params)}, 0},
+	{{0x11, NULL, 0}, 6},
+	{{0x20, NULL, 0}, 0},
+	{{0x36, mem_acc_ctrl_cmd_params, ARRAY_SIZE(mem_acc_ctrl_cmd_params)}, 0},
+	{{0x3A, interface_px_cmd_params, ARRAY_SIZE(interface_px_cmd_params)}, 120},
+	{{0xb1, set_power_2_cmd_params, ARRAY_SIZE(set_power_2_cmd_params)}, 0},
+	{{0xB3, set_rgb_interface_reg_cmd_params, ARRAY_SIZE(set_rgb_interface_reg_cmd_params)}, 0},
+	{{0xB4, set_disp_wav_cycle_cmd_params, ARRAY_SIZE(set_disp_wav_cycle_cmd_params)}, 0},
+	{{0xCC, set_panel_cmd_params, ARRAY_SIZE(set_panel_cmd_params)}, 0},
+	{{0xE0, set_gamma_curve_cmd_params, ARRAY_SIZE(set_gamma_curve_cmd_params)}, 5},
+	{{0x29, NULL, 0}, 0},
 };
 
-static void com32h3n74ulc_gpio_reset(unsigned int gpio)
-{
-	if (!gpio_is_valid(gpio))
-		return;
-
-	gpio_set_value(gpio, 1);
-	mdelay(10);
-	gpio_set_value(gpio, 0);
-	mdelay(20);
-	gpio_set_value(gpio, 1);
-	mdelay(50);
-}
-
-static int com32h3n74ulc_spi_transfer(struct spi_slave *spi, struct com32h3n74ulc_seq_entry *seq_entry)
+static int com32h3n74ulc_spi_transfer(struct spi_slave *spi, struct com32h3n74ulc_cmd *cmd)
 {
 	int i, error;
-	u32 command = seq_entry->cmd;
+	u32 command = cmd->cmd;
 	u32 msg;
 
 	error = spi_set_wordlen(spi, 9);
@@ -90,15 +88,13 @@ static int com32h3n74ulc_spi_transfer(struct spi_slave *spi, struct com32h3n74ul
 		return error;
 
 	// transfer parameters with DNC = 1
-	for (i = 0; i < seq_entry->params_len; i++) {
-		msg = (seq_entry->params[i] | 0x100); // ->DNC = 1
+	for (i = 0; i < cmd->params_len; i++) {
+		msg = (cmd->params[i] | 0x100); // ->DNC = 1
 		error = spi_xfer(spi, 9, &msg, NULL, SPI_XFER_ONCE);
 		if (error)
 			return error;
 	}
 	
-	if (seq_entry->delay>0) mdelay(seq_entry->delay);
-
 	return 0;
 }
 
@@ -108,43 +104,39 @@ static void com32h3n74ulc_lcd_init(struct spi_slave *spi)
 
 	// transfer init sequence
 	for (i = 0; i < ARRAY_SIZE(com32h3n74ulc_initseq); i++) {
-		if (com32h3n74ulc_spi_transfer(spi, com32h3n74ulc_initseq[i]) < 0)
+		if (com32h3n74ulc_spi_transfer(spi, &com32h3n74ulc_initseq[i].cmd) < 0)
 			puts("SPI transfer failed\n");
 
-		mdelay(priv->init_seq[i].delay_ms);
+		mdelay(com32h3n74ulc_initseq[i].delay_ms);
 	}
 }
 
 
 int com32h3n74ulc_init(unsigned reset_gpio, unsigned bus, unsigned cs)
 {
+	unsigned cs_gpio = GPIO_ECSPI2_CS0;
+
 	int error;
 	struct spi_slave *spi;
 
-	// configure GPIO pin for reset
-	if (gpio_is_valid(reset_gpio)) {
-		error = gpio_request(gpio, "lcd reset");
-		if (error) {
-			printf("Failed requesting reset GPIO%d: %d\n",
-			       reset_gpio, error);
-			return error;
-		}
-		error = gpio_direction_output(gpio, 0);
-		if (error) {
-			printf("Failed requesting reset direction GPIO%d: %d\n",
-			       reset_gpio, error);
-				gpio_free(gpio);
-		}
-	}
+	gpio_direction_output(cs_gpio, 1);
+
+	/* reset LCD */
+	gpio_direction_output(reset_gpio, 1);
+	mdelay(10);
+	gpio_direction_output(reset_gpio, 0);
+	mdelay(20);
+	gpio_direction_output(reset_gpio, 1);
+	mdelay(50);
+
+	enable_spi_clk(1, 1);
 
 	// init spi
 	spi = spi_setup_slave(bus, cs, 1000000, SPI_MODE_2);
 	error = spi_claim_bus(spi);
 	if (error)
-		goto bus_claim_fail;
+		return error;
 
-	/* reset LCD */
-	com32h3n74ulc_gpio_reset(reset_gpio);
 
 	/* Start operation by issuing the power on sequence*/
 	com32h3n74ulc_lcd_init(spi);
@@ -152,10 +144,56 @@ int com32h3n74ulc_init(unsigned reset_gpio, unsigned bus, unsigned cs)
 	spi_release_bus(spi);
 
 	return 0;
-
-bus_claim_fail:
-	if (gpio_is_valid(reset_gpio))
-		gpio_free(reset_gpio);
-
-	return error;
 }
+
+static int do_lcdinv(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	unsigned cs_gpio = GPIO_ECSPI2_CS0;
+	struct spi_slave *spi;
+	int ret = 0;
+	uint reg;
+
+	if (argc != 2)
+		return CMD_RET_USAGE;
+
+	gpio_direction_output(cs_gpio, 1);
+
+	enable_spi_clk(1, 1);
+
+	/* Setup spi_slave */
+	// init spi
+	spi = spi_setup_slave(1, 0, 1000000, SPI_MODE_2);
+	if (!spi) {
+		printf("%s: Failed to set up slave\n", __func__);
+		return 1;
+	}
+
+	/* Claim spi bus */
+	ret = spi_claim_bus(spi);
+	if (ret) {
+		debug("%s: Failed to claim SPI bus: %d\n", __func__, ret);
+		goto free_bus;
+	}
+
+	reg = simple_strtoul(argv[1], NULL, 16);
+	if (reg == 1) {
+		ret = com32h3n74ulc_spi_transfer(spi, &disp_inv_on);
+		printf("lcdinv: on");
+	} else {
+		ret = com32h3n74ulc_spi_transfer(spi, &disp_inv_off);
+		printf("lcdinv: off");
+	}
+
+	spi_release_bus(spi);
+free_bus:
+	spi_free_slave(spi);
+	enable_spi_clk(0, 1);
+	return ret ? 1 : 0;
+}
+
+U_BOOT_CMD(
+	lcdinv, 70, 0, do_lcdinv,
+	"read spi display register",
+	"reg16"
+);
+
