@@ -182,6 +182,17 @@ typedef u64 iomux_v3_cfg_t;
 void imx_iomux_v3_setup_pad(iomux_v3_cfg_t pad);
 void imx_iomux_v3_setup_multiple_pads(iomux_v3_cfg_t const *pad_list,
 				     unsigned count);
+/*
+* Set bits for general purpose registers
+*/
+void imx_iomux_set_gpr_register(int group, int start_bit,
+					 int num_bits, int value);
+#ifdef CONFIG_IOMUX_SHARE_CONF_REG
+void imx_iomux_gpio_set_direction(unsigned int gpio,
+				unsigned int direction);
+void imx_iomux_gpio_get_function(unsigned int gpio,
+				u32 *gpio_state);
+#endif
 
 /* macros for declaring and using pinmux array */
 #if defined(CONFIG_MX6QDL)
@@ -206,6 +217,14 @@ if (is_cpu_type(MXC_CPU_MX6Q)) {				\
 	imx_iomux_v3_setup_pad(MX6DL_##def);
 #define SETUP_IOMUX_PADS(x)					\
 	imx_iomux_v3_setup_multiple_pads(x, ARRAY_SIZE(x))
+#endif
+
+
+#if defined(CONFIG_MX6QDL)
+#define IOMUX_PAD_CTRL(name, ctrl)	NEW_PAD_CTRL(MX6Q_PAD_##name, ctrl), \
+					NEW_PAD_CTRL(MX6DL_PAD_##name, ctrl)
+#else
+#define IOMUX_PAD_CTRL(name, ctrl)	NEW_PAD_CTRL(MX6_PAD_##name, ctrl)
 #endif
 
 #endif	/* __MACH_IOMUX_V3_H__*/

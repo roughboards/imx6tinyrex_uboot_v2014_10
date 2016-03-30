@@ -15,7 +15,6 @@
 #include <asm/arch/sys_proto.h>
 #include <malloc.h>
 #include <asm/arch/mx6-pins.h>
-#include <asm/arch/mx6q_pins.h>
 #include <asm/errno.h>
 #include <asm/gpio.h>
 #include <asm/imx-common/boot_mode.h>
