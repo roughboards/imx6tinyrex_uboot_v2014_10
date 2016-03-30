@@ -22,6 +22,17 @@
 #include "ipu.h"
 #include "ipu_regs.h"
 
+// hack from gadget/f_mass_storage.c
+inline void set_bit(int nr, volatile void *addr)
+{
+	int	mask;
+	unsigned int *a = (unsigned int *) addr;
+
+	a += nr >> 5;
+	mask = 1 << (nr & 0x1f);
+	*a |= mask;
+}
+
 enum csc_type_t {
 	RGB2YUV = 0,
 	YUV2RGB,
