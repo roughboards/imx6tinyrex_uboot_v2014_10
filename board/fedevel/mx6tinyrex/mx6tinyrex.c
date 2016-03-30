@@ -482,11 +482,11 @@ void board_enable_lcd(const struct display_info_t *di, int enable)
 		.xres           = 800,\
 		.yres           = 480,\
 		.pixclock       = 30720,\
-		.left_margin    = 16,\
-		.right_margin   = 20,\
-		.upper_margin   = 16,\
-		.lower_margin   = 4,\
-		.hsync_len      = 52,\
+		.left_margin    = 10,\
+		.right_margin   = 8,\
+		.upper_margin   = 2,\
+		.lower_margin   = 2,\
+		.hsync_len      = 10,\
 		.vsync_len      = 2,\
 		.sync           = 0,\
 		.vmode          = FB_VMODE_NONINTERLACED\
