@@ -132,7 +132,7 @@ int com32h3n74ulc_init(unsigned reset_gpio, unsigned bus, unsigned cs)
 	enable_spi_clk(1, 1);
 
 	// init spi
-	spi = spi_setup_slave(bus, cs, 1000000, SPI_MODE_2);
+	spi = spi_setup_slave(bus, cs, 1000000, SPI_MODE_3);
 	error = spi_claim_bus(spi);
 	if (error)
 		return error;
@@ -162,7 +162,7 @@ static int do_lcdinv(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 	/* Setup spi_slave */
 	// init spi
-	spi = spi_setup_slave(1, 0, 1000000, SPI_MODE_2);
+	spi = spi_setup_slave(1, 0, 1000000, SPI_MODE_3);
 	if (!spi) {
 		printf("%s: Failed to set up slave\n", __func__);
 		return 1;
