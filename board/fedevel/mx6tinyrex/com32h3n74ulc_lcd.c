@@ -83,14 +83,18 @@ void SPI_WriteCommand(unsigned char i)
 	unsigned char n;  
 	gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
 	gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+	udelay(1);
 	gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+	udelay(1);
       
 	for(n=0; n<8; n++) {    
 		if(i&0x80) gpio_direction_output(GPIO_ECSPI2_MOSI, 1);
 		else gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
 		i<<= 1;  
 		gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+		udelay(1);
 		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+		udelay(1);
 	}  
 }  
   
@@ -99,14 +103,18 @@ void SPI_WriteData(unsigned char i) {
 	unsigned char n;  
 	gpio_direction_output(GPIO_ECSPI2_MOSI, 1);
 	gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+	udelay(1);
 	gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+	udelay(1);
       
 	for(n=0; n<8; n++) {    
 		if(i&0x80) gpio_direction_output(GPIO_ECSPI2_MOSI, 1);  
 		else gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
 		i<<= 1;  
 		gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+		udelay(1);
 		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+		udelay(1);
 	}  
 }  
 
@@ -202,22 +210,22 @@ static int do_lcdinv(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 	gpio_direction_output(cs_gpio, 1);
 
-	enable_spi_clk(1, 1);
+//	enable_spi_clk(1, 1);
 
 	/* Setup spi_slave */
 	// init spi
-	spi = spi_setup_slave(1, 0, 1000000, SPI_MODE_3);
-	if (!spi) {
-		printf("%s: Failed to set up slave\n", __func__);
-		return 1;
-	}
+//	spi = spi_setup_slave(1, 0, 1000000, SPI_MODE_3);
+//	if (!spi) {
+//		printf("%s: Failed to set up slave\n", __func__);
+//		return 1;
+//	}
 
 	/* Claim spi bus */
-	ret = spi_claim_bus(spi);
-	if (ret) {
-		debug("%s: Failed to claim SPI bus: %d\n", __func__, ret);
-		goto free_bus;
-	}
+//	ret = spi_claim_bus(spi);
+//	if (ret) {
+//		debug("%s: Failed to claim SPI bus: %d\n", __func__, ret);
+//		goto free_bus;
+//	}
 
 	reg = simple_strtoul(argv[1], NULL, 16);
 	if (reg == 1) {
@@ -228,10 +236,10 @@ static int do_lcdinv(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		printf("lcdinv: off\n");
 	}
 
-	spi_release_bus(spi);
-free_bus:
-	spi_free_slave(spi);
-	enable_spi_clk(0, 1);
+//	spi_release_bus(spi);
+//free_bus:
+//	spi_free_slave(spi);
+//	enable_spi_clk(0, 1);
 	return ret ? 1 : 0;
 }
 
