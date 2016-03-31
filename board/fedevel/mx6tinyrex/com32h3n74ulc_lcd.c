@@ -77,9 +77,6 @@ static struct com32h3n74ulc_seq_entry com32h3n74ulc_initseq[] = {
 	{{0x29, NULL, 0}, 0},
 };
 
-		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
-		gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
-
 // bitbanging cmd
 void SPI_WriteComm(unsigned char i)  
 {  
