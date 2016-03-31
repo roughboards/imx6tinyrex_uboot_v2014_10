@@ -194,9 +194,6 @@ iomux_v3_cfg_t const enet_pads2[] = {
 #define GPIO_ENET_CFG_MODE3     IMX_GPIO_NR(6, 29)
 #define GPIO_ENET_CFG_CLK125_EN IMX_GPIO_NR(6, 24)
 
-#define GPIO_ECSPI1_CS0     IMX_GPIO_NR(2, 30)
-#define GPIO_ECSPI2_CS0     IMX_GPIO_NR(2, 26)
-#define GPIO_ECSPI2_CS1     IMX_GPIO_NR(5, 9)
 
 static void setup_iomux_enet(void)
 {
@@ -279,12 +276,24 @@ iomux_v3_cfg_t const ecspi2_pads[] = {
         MX6_PAD_DISP0_DAT15__GPIO5_IO09 | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS1 */
 };
 
+#define GPIO_ECSPI1_CS0     IMX_GPIO_NR(2, 30)
+#define GPIO_ECSPI2_CS0     IMX_GPIO_NR(2, 26)
+#define GPIO_ECSPI2_CS1     IMX_GPIO_NR(5, 9)
+#define GPIO_ECSPI2_SCK     IMX_GPIO_NR(2, 23)
+#define GPIO_ECSPI2_MOSI     IMX_GPIO_NR(2, 24)
+
+
 static void setup_spi(void)
 {
         imx_iomux_v3_setup_multiple_pads(ecspi1_pads, ARRAY_SIZE(ecspi1_pads));
-        imx_iomux_v3_setup_multiple_pads(ecspi2_pads, ARRAY_SIZE(ecspi2_pads));
         enable_spi_clk(true, 0);
-        enable_spi_clk(true, 1);
+//        imx_iomux_v3_setup_multiple_pads(ecspi2_pads, ARRAY_SIZE(ecspi2_pads));
+//        enable_spi_clk(true, 1);
+		gpio_direction_output(GPIO_ECSPI2_CS0, 1);
+		gpio_direction_output(GPIO_ECSPI2_CS1, 1);
+		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+		gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
+		
 }
 
 static struct i2c_pads_info i2c0_pad_info = {
@@ -594,11 +603,6 @@ int board_late_init(void)
 #ifdef CONFIG_CMD_BMODE
         add_board_boot_modes(board_boot_modes);
 #endif
-// add lcd spi init sequence
-#ifdef CONFIG_MXC_SPI
-	
-#endif
-
 
         return 0;
 }

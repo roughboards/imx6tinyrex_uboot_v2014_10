@@ -17,7 +17,12 @@
 
 #include "com32h3n74ulc_lcd.h"
 
+// double defined in mx6tinyrex.c ugly
+#define GPIO_ECSPI1_CS0     IMX_GPIO_NR(2, 30)
 #define GPIO_ECSPI2_CS0     IMX_GPIO_NR(2, 26)
+#define GPIO_ECSPI2_CS1     IMX_GPIO_NR(5, 9)
+#define GPIO_ECSPI2_SCK     IMX_GPIO_NR(2, 23)
+#define GPIO_ECSPI2_MOSI     IMX_GPIO_NR(2, 24)
 
 struct com32h3n74ulc_cmd {
 	u16 cmd;
@@ -72,28 +77,70 @@ static struct com32h3n74ulc_seq_entry com32h3n74ulc_initseq[] = {
 	{{0x29, NULL, 0}, 0},
 };
 
+		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+		gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
+
+// bitbanging cmd
+void SPI_WriteComm(unsigned char i)  
+{  
+	unsigned char n;  
+	gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
+	gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+	gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+      
+	for(n=0; n<8; n++) {    
+		if(i&0x80) gpio_direction_output(GPIO_ECSPI2_MOSI, 1);
+		else gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
+		i<<= 1;  
+		gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+	}  
+}  
+  
+// bit banging data
+void SPI_WriteData(unsigned char i) {  
+	unsigned char n;  
+	gpio_direction_output(GPIO_ECSPI2_MOSI, 1);
+	gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+	gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+      
+	for(n=0; n<8; n++) {    
+		if(i&0x80) gpio_direction_output(GPIO_ECSPI2_MOSI, 1);  
+		else gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
+		i<<= 1;  
+		gpio_direction_output(GPIO_ECSPI2_SCK, 0);
+		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
+	}  
+}  
+
 static int com32h3n74ulc_spi_transfer(struct spi_slave *spi, struct com32h3n74ulc_cmd *cmd)
 {
 	int i, error;
 	u32 command = cmd->cmd;
 	u32 msg;
 
-	error = spi_set_wordlen(spi, 9);
-	if (error)
-		return error;
+//	error = spi_set_wordlen(spi, 9);
+//	if (error)
+//		return error;
+	// assert cs
+	gpio_direction_output(GPIO_ECSPI2_CS0, 0);
 
 	// transfer command with DNC = 0
-	error = spi_xfer(spi, 9, &command, NULL, SPI_XFER_ONCE);
-	if (error)
-		return error;
+	SPI_WriteCmd(cmd);
+//	error = spi_xfer(spi, 9, &command, NULL, SPI_XFER_ONCE);
+//	if (error)
+//		return error;
 
 	// transfer parameters with DNC = 1
 	for (i = 0; i < cmd->params_len; i++) {
-		msg = (cmd->params[i] | 0x100); // ->DNC = 1
-		error = spi_xfer(spi, 9, &msg, NULL, SPI_XFER_ONCE);
-		if (error)
-			return error;
+		SPI_WriteData(cmd->params[i]);
+//		msg = (cmd->params[i] | 0x100); // ->DNC = 1
+//		error = spi_xfer(spi, 9, &msg, NULL, SPI_XFER_ONCE);
+//		if (error)
+//			return error;
 	}
+	// deassert cs
+	gpio_direction_output(GPIO_ECSPI2_CS0, 1);
 	
 	return 0;
 }
@@ -129,19 +176,19 @@ int com32h3n74ulc_init(unsigned reset_gpio, unsigned bus, unsigned cs)
 	gpio_direction_output(reset_gpio, 1);
 	mdelay(50);
 
-	enable_spi_clk(1, 1);
+//	enable_spi_clk(1, 1);
 
 	// init spi
-	spi = spi_setup_slave(bus, cs, 1000000, SPI_MODE_3);
-	error = spi_claim_bus(spi);
-	if (error)
-		return error;
+//	spi = spi_setup_slave(bus, cs, 1000000, SPI_MODE_3);
+//	error = spi_claim_bus(spi);
+//	if (error)
+//		return error;
 
 
 	/* Start operation by issuing the power on sequence*/
 	com32h3n74ulc_lcd_init(spi);
 
-	spi_release_bus(spi);
+//	spi_release_bus(spi);
 
 	return 0;
 }
