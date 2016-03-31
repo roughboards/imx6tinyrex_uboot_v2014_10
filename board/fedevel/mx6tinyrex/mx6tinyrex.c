@@ -472,7 +472,7 @@ void board_enable_lcd(const struct display_info_t *di, int enable)
 #define IMX_VD_SPI_QVGA(_mode, _detect, _bus) \
 {\
 	.bus	= _bus,\
-	.addr	= 0x70,\
+	.addr	= 0,\
 	.pixfmt	= IPU_PIX_FMT_RGB24,\
 	.detect	= NULL,\
 	.enable	= board_enable_lcd,\
@@ -483,7 +483,7 @@ void board_enable_lcd(const struct display_info_t *di, int enable)
 		.refresh        = 75,\
 		.xres           = 800,\
 		.yres           = 480,\
-		.pixclock       = 30720,\
+		.pixclock       = 32552,\ 
 		.left_margin    = 10,\
 		.right_margin   = 8,\
 		.upper_margin   = 2,\

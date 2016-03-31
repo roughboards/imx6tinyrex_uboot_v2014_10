@@ -746,7 +746,7 @@ void board_video_enable(void)
 static int init_display(const struct display_info_t *di)
 {
 #ifndef CONFIG_MX6SX
-	int ret = ipuv3_fb_init(&di->mode, 0, di->pixfmt);
+	int ret = ipuv3_fb_init(&di->mode, 1, di->pixfmt); // changed to disp 1
 	if (ret) {
 		printf("LCD %s cannot be configured: %d\n", di->mode.name, ret);
 		return -EINVAL;
