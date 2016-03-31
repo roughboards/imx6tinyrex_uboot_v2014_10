@@ -78,7 +78,7 @@ static struct com32h3n74ulc_seq_entry com32h3n74ulc_initseq[] = {
 };
 
 // bitbanging cmd
-void SPI_WriteComm(unsigned char i)  
+void SPI_WriteCommand(unsigned char i)  
 {  
 	unsigned char n;  
 	gpio_direction_output(GPIO_ECSPI2_MOSI, 0);
@@ -112,9 +112,9 @@ void SPI_WriteData(unsigned char i) {
 
 static int com32h3n74ulc_spi_transfer(struct spi_slave *spi, struct com32h3n74ulc_cmd *cmd)
 {
-	int i, error;
+	int i;//, error;
 	u32 command = cmd->cmd;
-	u32 msg;
+//	u32 msg;
 
 //	error = spi_set_wordlen(spi, 9);
 //	if (error)
@@ -123,7 +123,7 @@ static int com32h3n74ulc_spi_transfer(struct spi_slave *spi, struct com32h3n74ul
 	gpio_direction_output(GPIO_ECSPI2_CS0, 0);
 
 	// transfer command with DNC = 0
-	SPI_WriteCmd(cmd);
+	SPI_WriteCommand(command);
 //	error = spi_xfer(spi, 9, &command, NULL, SPI_XFER_ONCE);
 //	if (error)
 //		return error;
