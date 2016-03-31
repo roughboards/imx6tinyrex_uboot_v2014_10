@@ -74,7 +74,6 @@
 #define CONFIG_SYS_FSL_USDHC_NUM            3
 
 /* SPI Configs */
-//#define CONFIG_SOFT_SPI // for LCD 9-bit
 #define CONFIG_CMD_SPI
 #define CONFIG_CMD_SF
 #ifdef CONFIG_CMD_SF

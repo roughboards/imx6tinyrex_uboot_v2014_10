@@ -268,13 +268,13 @@ iomux_v3_cfg_t const ecspi1_pads[] = {
         MX6_PAD_EIM_EB2__GPIO2_IO30  | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS0 */
 };
 
-iomux_v3_cfg_t const ecspi2_pads[] = {
-        MX6_PAD_EIM_CS0__ECSPI2_SCLK    | MUX_PAD_CTRL(SPI_PAD_CTRL),
-        MX6_PAD_EIM_OE__ECSPI2_MISO     | MUX_PAD_CTRL(SPI_PAD_CTRL),
-        MX6_PAD_EIM_CS1__ECSPI2_MOSI    | MUX_PAD_CTRL(SPI_PAD_CTRL),
-        MX6_PAD_EIM_RW__GPIO2_IO26      | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS0 */
-        MX6_PAD_DISP0_DAT15__GPIO5_IO09 | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS1 */
-};
+// iomux_v3_cfg_t const ecspi2_pads[] = {
+//         MX6_PAD_EIM_CS0__ECSPI2_SCLK    | MUX_PAD_CTRL(SPI_PAD_CTRL),
+//         MX6_PAD_EIM_OE__ECSPI2_MISO     | MUX_PAD_CTRL(SPI_PAD_CTRL),
+//         MX6_PAD_EIM_CS1__ECSPI2_MOSI    | MUX_PAD_CTRL(SPI_PAD_CTRL),
+//         MX6_PAD_EIM_RW__GPIO2_IO26      | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS0 */
+//         MX6_PAD_DISP0_DAT15__GPIO5_IO09 | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS1 */
+// };
 
 #define GPIO_ECSPI1_CS0     IMX_GPIO_NR(2, 30)
 #define GPIO_ECSPI2_CS0     IMX_GPIO_NR(2, 26)
@@ -492,7 +492,7 @@ void board_enable_lcd(const struct display_info_t *di, int enable)
 		.refresh        = 75,\
 		.xres           = 800,\
 		.yres           = 480,\
-		.pixclock       = 32552,\ 
+		.pixclock       = 32552,\
 		.left_margin    = 10,\
 		.right_margin   = 8,\
 		.upper_margin   = 2,\
