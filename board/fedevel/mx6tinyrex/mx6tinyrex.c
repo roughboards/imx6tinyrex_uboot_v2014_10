@@ -73,8 +73,6 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define RGB_PAD_CTRL	PAD_CTL_DSE_120ohm
 
-#define GPIO_LCD_RSTB    IMX_GPIO_NR(2, 11)
-
 #ifdef CONFIG_CMD_FBPANEL
 static const iomux_v3_cfg_t rgb_pads[] = {
 	IOMUX_PAD_CTRL(EIM_A16__IPU1_DI1_DISP_CLK, RGB_PAD_CTRL),
@@ -105,6 +103,9 @@ static const iomux_v3_cfg_t rgb_pads[] = {
 	IOMUX_PAD_CTRL(EIM_D30__IPU1_DISP1_DATA21, RGB_PAD_CTRL),
 	IOMUX_PAD_CTRL(EIM_D26__IPU1_DISP1_DATA22, RGB_PAD_CTRL),
 	IOMUX_PAD_CTRL(EIM_D27__IPU1_DISP1_DATA23, RGB_PAD_CTRL),
+	#define GPIO_LCD_RSTB    IMX_GPIO_NR(2, 11)
+	IOMUX_PAD_CTRL(SD4_DAT3__GPIO2_IO11, WEAK_PULLUP),
+
 };
 
 static const iomux_v3_cfg_t rgb_gpio_pads[] = {
@@ -417,14 +418,14 @@ int board_mmc_init(bd_t *bis)
                         usdhc_cfg[1].sdhc_clk      = mxc_get_clock(MXC_ESDHC_CLK);
                         usdhc_cfg[1].max_bus_width = 8;
                         break;
-                case 2:
-                        imx_iomux_v3_setup_multiple_pads(
-                                usdhc4_pads, ARRAY_SIZE(usdhc4_pads));
-                        gpio_direction_input(GPIO_USDHC4_CD);
-                        usdhc_cfg[2].esdhc_base    = USDHC4_BASE_ADDR;
-                        usdhc_cfg[2].sdhc_clk      = mxc_get_clock(MXC_ESDHC4_CLK);
-                        usdhc_cfg[2].max_bus_width = 8;
-                        break;
+//                 case 2:
+//                         imx_iomux_v3_setup_multiple_pads(
+//                                 usdhc4_pads, ARRAY_SIZE(usdhc4_pads));
+//                         gpio_direction_input(GPIO_USDHC4_CD);
+//                         usdhc_cfg[2].esdhc_base    = USDHC4_BASE_ADDR;
+//                         usdhc_cfg[2].sdhc_clk      = mxc_get_clock(MXC_ESDHC4_CLK);
+//                         usdhc_cfg[2].max_bus_width = 8;
+//                         break;
                 default:
                         printf("Warning: you configured more USDHC controllers"
                                "(%d) then supported by the board (%d)\n",
