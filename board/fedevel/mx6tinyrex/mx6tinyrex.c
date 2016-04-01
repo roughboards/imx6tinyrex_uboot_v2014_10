@@ -268,6 +268,14 @@ iomux_v3_cfg_t const ecspi1_pads[] = {
         MX6_PAD_EIM_EB2__GPIO2_IO30  | MUX_PAD_CTRL(SPI_PAD_CTRL), /* CS0 */
 };
 
+static const iomux_v3_cfg_t ecspi2_pads[] = {
+	IOMUX_PAD_CTRL(EIM_CS0__GPIO2_IO23, WEAK_PULLUP),
+	IOMUX_PAD_CTRL(EIM_OE__GPIO2_IO25, WEAK_PULLUP),
+	IOMUX_PAD_CTRL(EIM_CS1__GPIO2_IO24, WEAK_PULLUP),
+	IOMUX_PAD_CTRL(EIM_RW__GPIO2_IO26, WEAK_PULLUP),
+	IOMUX_PAD_CTRL(DISP0_DAT15__GPIO5_IO09, WEAK_PULLUP),
+
+};
 // iomux_v3_cfg_t const ecspi2_pads[] = {
 //         MX6_PAD_EIM_CS0__ECSPI2_SCLK    | MUX_PAD_CTRL(SPI_PAD_CTRL),
 //         MX6_PAD_EIM_OE__ECSPI2_MISO     | MUX_PAD_CTRL(SPI_PAD_CTRL),
@@ -289,6 +297,7 @@ static void setup_spi(void)
         enable_spi_clk(true, 0);
 //        imx_iomux_v3_setup_multiple_pads(ecspi2_pads, ARRAY_SIZE(ecspi2_pads));
 //        enable_spi_clk(true, 1);
+		SETUP_IOMUX_PADS(ecspi2_pads);
 		gpio_direction_output(GPIO_ECSPI2_CS0, 1);
 		gpio_direction_output(GPIO_ECSPI2_CS1, 1);
 		gpio_direction_output(GPIO_ECSPI2_SCK, 1);
