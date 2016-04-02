@@ -500,8 +500,8 @@ void board_enable_lcd(const struct display_info_t *di, int enable)
 	.mode	= {\
 		.name           = "qvga",\
 		.refresh        = 75,\
-		.xres           = 800,\
-		.yres           = 480,\
+		.xres           = 480,\
+		.yres           = 800,\
 		.pixclock       = 32552,\
 		.left_margin    = 10,\
 		.right_margin   = 8,\
