@@ -524,6 +524,29 @@ static const struct display_info_t displays[] = {
 
 #endif /* CONFIG_CMD_FBPANEL */
 
+int splash_screen_prepare(void)
+{
+	char *env_loadsplash;
+
+	if (!getenv("splashimage") || !getenv("splashsize")) {
+		return -1;
+	}
+
+	env_loadsplash = getenv("loadsplash");
+	if (env_loadsplash == NULL) {
+		printf("Environment variable loadsplash not found!\n");
+		return -1;
+	}
+
+	if (run_command_list(env_loadsplash, -1, 0)) {
+		printf("failed to run loadsplash %s\n\n", env_loadsplash);
+		return -1;
+	}
+
+	return 0;
+}
+
+
 /*
  * Do not overwrite the console
  * Use always serial for U-Boot console
