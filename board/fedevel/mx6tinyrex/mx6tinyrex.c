@@ -480,10 +480,14 @@ void board_enable_lcd(const struct display_info_t *di, int enable)
 		SETUP_IOMUX_PADS(rgb_pads);
 		com32h3n74ulc_init(GPIO_LCD_RSTB, 1, 0);
 		mdelay(100); /* let panel sync up before enabling backlight */
-		// TODO enable backlight here
-		
+		// enable backlight
+		i2c_set_bus_num(1);
+		i2c_reg_write(0x36, 0x10, 0x21); // enable main LEDs
+		i2c_reg_write(0x36, 0xA0, 0xF0); // set brightness
 	} else {
-		// TODO disable backlight here
+		// disable backlight
+		i2c_set_bus_num(1);
+		i2c_reg_write(0x36, 0x10, 0x20); // disable main LEDs
 		
 		SETUP_IOMUX_PADS(rgb_gpio_pads);
 	}
@@ -566,15 +570,16 @@ int board_init(void)
         /* address of boot parameters */
         gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
+        setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c0_pad_info);
+        setup_i2c(1, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c1_pad_info);
+        setup_i2c(2, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c2_pad_info);
+
         setup_spi();
 
 #ifdef CONFIG_CMD_FBPANEL
 	fbp_setup_display(displays, ARRAY_SIZE(displays));
 #endif
 
-        setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c0_pad_info);
-        setup_i2c(1, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c1_pad_info);
-        setup_i2c(2, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c2_pad_info);
 
 #if defined(CONFIG_CMD_SATA) && defined(CONFIG_MX6Q)
         setup_sata();
